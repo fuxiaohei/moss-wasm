@@ -4,13 +4,17 @@ use moss_runtime::worker::Worker;
 
 #[tokio::main]
 async fn main() {
-    let target = "target/wasm32-wasi/release/rust_basic.wasm";
-    let output = "target/wasm32-wasi/release/rust_basic.component.wasm";
+    let mut name = std::env::args().nth(1).unwrap();
+    name = name.replace("-", "_");
+    println!("Run name: {}", name);
 
-    compiler::convert_component(target, Some(output.to_string()));
+    let target = format!("target/wasm32-wasi/release/{}.wasm", name);
+    let output = format!("target/wasm32-wasi/release/{}.component.wasm", name);
+
+    compiler::convert_component(&target, Some(output.to_string()));
     println!("Run component: {}", output);
 
-    let mut worker = Worker::new(output).await.unwrap();
+    let mut worker = Worker::new(&output).await.unwrap();
 
     let headers = vec![("Content-Type", "application/json")];
     let req = http_impl::http_handler::Request {
@@ -21,7 +25,7 @@ async fn main() {
     };
 
     let resp = worker.execute(req).await.unwrap();
-    println!("status, {:?}", resp.status);
+    println!("-----\nstatus, {:?}", resp.status);
     for (key, value) in resp.headers {
         println!("header, {}: {}", key, value);
     }

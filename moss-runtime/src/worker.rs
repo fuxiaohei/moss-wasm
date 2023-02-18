@@ -1,6 +1,7 @@
 use crate::context::Context;
 use anyhow::Result;
 use moss_host_call::http_impl;
+use moss_host_call::fetch_impl;
 use wasmtime::component::{Component, InstancePre, Linker};
 use wasmtime::{Config, Engine};
 
@@ -28,6 +29,7 @@ impl Worker {
         // create linker
         let mut linker: Linker<Context> = Linker::new(&engine);
         wasi_host::add_to_linker(&mut linker, Context::wasi)?;
+        fetch_impl::http_fetch::add_to_linker(&mut linker, Context::fetch_impl)?;
 
         // create instance_pre
         let instance_pre = linker.instantiate_pre(&component)?;

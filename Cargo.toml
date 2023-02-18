@@ -13,6 +13,7 @@ members = [
     "moss-sdk/macro",
     "moss-runtime/host-call",
     "examples/rust-basic",
+    "examples/rust-fetch",
 ]
 
 [workspace.package]
@@ -48,6 +49,7 @@ wasmtime = { git = "https://github.com/bytecodealliance/wasmtime", features = [
 ], branch = "release-6.0.0" }
 wasi-host = { git = "https://github.com/bytecodealliance/preview2-prototyping", package = "host" }
 wasi-cap-std-sync = { git = "https://github.com/bytecodealliance/preview2-prototyping" }
+async-trait = "0.1.64"
 
 [build-dependencies]
 moss-runtime = { path = "moss-runtime" }

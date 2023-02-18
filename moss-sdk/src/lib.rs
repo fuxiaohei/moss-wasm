@@ -1,3 +1,5 @@
+mod fetch_impl;
+
 pub mod http {
     use bytes::Bytes;
 
@@ -9,6 +11,11 @@ pub mod http {
         *response.status_mut() = status;
         response
     }
+
+    pub use super::fetch_impl::fetch;
+    pub use super::fetch_impl::FetchOptions;
+    pub use super::fetch_impl::RedirectPolicy;
+    pub type Error = super::fetch_impl::FetchError;
 }
 
 pub use moss_sdk_macro::http_main;
