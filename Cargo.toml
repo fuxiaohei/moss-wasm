@@ -5,7 +5,15 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [workspace]
-members = ["moss-cli", "moss-lib"]
+members = [
+    "moss-cli",
+    "moss-runtime",
+    "moss-lib",
+    "moss-sdk",
+    "moss-sdk/macro",
+    "moss-runtime/host-call",
+    "examples/rust-basic",
+]
 
 [workspace.package]
 version = "0.1.1"
@@ -13,8 +21,14 @@ edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [dependencies]
+moss-runtime = { path = "moss-runtime" }
+tokio = { workspace = true }
+moss-host-call = { path = "moss-runtime/host-call" }
 
 [workspace.dependencies]
+anyhow = "1.0.69"
+bytes = "1.4.0"
+http = "0.2.9"
 time = "0.3.19"
 tokio = { version = "1.25.0", features = ["full"] }
 tracing = "0.1.37"
@@ -24,3 +38,16 @@ tracing-subscriber = { version = "0.3.16", features = [
     "env-filter"
 ] }
 lazy_static = "1.4.0"
+wit-bindgen-core = { git = "https://github.com/bytecodealliance/wit-bindgen" }
+wit-bindgen-gen-guest-rust = { git = "https://github.com/bytecodealliance/wit-bindgen" }
+wit-component = "0.7.0"
+wit-parser = "0.6.1"
+wasmtime = { git = "https://github.com/bytecodealliance/wasmtime", features = [
+    "component-model",
+    "async"
+], branch = "release-6.0.0" }
+wasi-host = { git = "https://github.com/bytecodealliance/preview2-prototyping", package = "host" }
+wasi-cap-std-sync = { git = "https://github.com/bytecodealliance/preview2-prototyping" }
+
+[build-dependencies]
+moss-runtime = { path = "moss-runtime" }

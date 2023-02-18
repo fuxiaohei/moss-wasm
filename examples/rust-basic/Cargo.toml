@@ -1,0 +1,14 @@
+[package]
+name = "rust-basic"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.69"
+bytes = "1.4.0"
+http = "0.2.9"
+wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen" }
+moss-sdk = { path = "../../moss-sdk" }
+
+[lib]
+crate-type = ["cdylib"]

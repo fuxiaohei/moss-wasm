@@ -1,0 +1,11 @@
+[package]
+name = "moss-sdk"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+http = { workspace = true }
+bytes = { workspace = true }
+moss-sdk-macro = { path = "./macro" }
