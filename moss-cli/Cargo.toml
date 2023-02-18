@@ -1,0 +1,10 @@
+[package]
+name = "moss-cli"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+clap = { version = "4.1.6", features = ["derive"] }
+moss-lib = { path = "../moss-lib" }
+tokio = { workspace = true }
