@@ -8,6 +8,9 @@ authors = { workspace = true }
 clap = { version = "4.1.6", features = ["derive"] }
 futures = "0.3.26"
 hyper = { workspace = true }
+log = { version = "0.4.17", features = ["max_level_warn", "release_max_level_error"] }
+moss-host-call = { path = "../moss-runtime/host-call" }
 moss-lib = { path = "../moss-lib" }
+moss-runtime = { path = "../moss-runtime" }
 tokio = { workspace = true }
 tracing = { workspace = true }

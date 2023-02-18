@@ -6,7 +6,10 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+async-trait = { workspace = true }
+deadpool = { version = "0.9.5", features = ["rt_tokio_1"] }
 moss-host-call = { path = "./host-call" }
+tracing = { workspace = true }
 wasi-cap-std-sync = { workspace = true }
 wasi-host = { workspace = true }
 wasmtime = { workspace = true }

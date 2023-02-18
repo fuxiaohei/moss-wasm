@@ -40,8 +40,11 @@ pub struct Serve {
 impl Serve {
     pub async fn run(&self) {
         debug!("Serve: {:?}", self);
-        crate::server::start(self.addr.unwrap(), "abc")
-            .instrument(debug_span!("[Http]"))
-            .await;
+        crate::server::start(
+            self.addr.unwrap(),
+            "target/wasm32-wasi/release/rust_basic.component.wasm",
+        )
+        .instrument(debug_span!("[Http]"))
+        .await;
     }
 }
