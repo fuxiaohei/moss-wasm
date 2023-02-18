@@ -1,6 +1,7 @@
 use clap::Parser;
 
 mod flags;
+mod server;
 
 ///  moss-cli command line
 #[derive(Parser)]

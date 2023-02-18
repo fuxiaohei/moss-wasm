@@ -6,11 +6,11 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+moss-host-call = { path = "./host-call" }
+wasi-cap-std-sync = { workspace = true }
+wasi-host = { workspace = true }
+wasmtime = { workspace = true }
 wit-bindgen-core = { workspace = true }
 wit-bindgen-gen-guest-rust = { workspace = true }
-wit-parser = { workspace = true }
 wit-component = { workspace = true }
-wasi-host = { workspace = true }
-wasi-cap-std-sync = { workspace = true }
-wasmtime = { workspace = true }
-moss-host-call = { path = "./host-call" }
+wit-parser = { workspace = true }

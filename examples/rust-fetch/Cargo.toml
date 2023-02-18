@@ -7,8 +7,8 @@ edition = "2021"
 anyhow = "1.0.69"
 bytes = "1.4.0"
 http = "0.2.9"
-wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen" }
 moss-sdk = { path = "../../moss-sdk" }
+wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen" }
 
 [lib]
 crate-type = ["cdylib"]

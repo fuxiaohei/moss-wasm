@@ -1,5 +1,6 @@
 use clap::Args;
 use std::net::SocketAddr;
+use tracing::{debug, debug_span, Instrument};
 
 #[derive(Args, Debug)]
 pub struct Init {
@@ -38,6 +39,9 @@ pub struct Serve {
 
 impl Serve {
     pub async fn run(&self) {
-        println!("Serve: {:?}", self);
+        debug!("Serve: {:?}", self);
+        crate::server::start(self.addr.unwrap(), "abc")
+            .instrument(debug_span!("[Http]"))
+            .await;
     }
 }

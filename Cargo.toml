@@ -6,14 +6,14 @@ authors = { workspace = true }
 
 [workspace]
 members = [
-    "moss-cli",
-    "moss-runtime",
-    "moss-lib",
-    "moss-sdk",
-    "moss-sdk/macro",
-    "moss-runtime/host-call",
     "examples/rust-basic",
     "examples/rust-fetch",
+    "moss-cli",
+    "moss-lib",
+    "moss-runtime",
+    "moss-runtime/host-call",
+    "moss-sdk",
+    "moss-sdk/macro",
 ]
 
 [workspace.package]
@@ -22,9 +22,9 @@ edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [dependencies]
+moss-host-call = { path = "moss-runtime/host-call" }
 moss-runtime = { path = "moss-runtime" }
 tokio = { workspace = true }
-moss-host-call = { path = "moss-runtime/host-call" }
 
 [workspace.dependencies]
 anyhow = "1.0.69"
@@ -50,6 +50,7 @@ wasmtime = { git = "https://github.com/bytecodealliance/wasmtime", features = [
 wasi-host = { git = "https://github.com/bytecodealliance/preview2-prototyping", package = "host" }
 wasi-cap-std-sync = { git = "https://github.com/bytecodealliance/preview2-prototyping" }
 async-trait = "0.1.64"
+hyper = { version = "0.14.24", features = ["full"] }
 
 [build-dependencies]
 moss-runtime = { path = "moss-runtime" }

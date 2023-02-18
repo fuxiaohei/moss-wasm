@@ -5,7 +5,7 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
-wasmtime = { workspace = true }
 anyhow = { workspace = true }
 async-trait = { workspace = true }
 reqwest = { version = "0.11.14", features = ["rustls-tls"] }
+wasmtime = { workspace = true }
