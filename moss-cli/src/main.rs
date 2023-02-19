@@ -1,5 +1,6 @@
 use clap::Parser;
 
+mod embed;
 mod flags;
 mod server;
 

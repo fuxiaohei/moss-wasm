@@ -5,18 +5,18 @@ use moss_runtime::pool;
 #[tokio::main]
 async fn main() {
     let mut name = std::env::args().nth(1).unwrap();
-    name = name.replace("-", "_");
-    println!("Run name: {}", name);
+    name = name.replace('-', "_");
+    println!("Run name: {name}");
 
-    let target = format!("target/wasm32-wasi/release/{}.wasm", name);
-    let output = format!("target/wasm32-wasi/release/{}.component.wasm", name);
+    let target = format!("target/wasm32-wasi/release/{name}.wasm");
+    let output = format!("target/wasm32-wasi/release/{name}.component.wasm");
 
     compiler::convert_component(&target, Some(output.to_string()));
-    println!("Run component: {}", output);
+    println!("Run component: {output}");
 
     let worker_pool = pool::create(&output).unwrap();
     let status = worker_pool.status();
-    println!("Pool status, {:?}", status);
+    println!("Pool status, {status:?}");
 
     let mut worker = worker_pool.get().await.unwrap();
     let worker = worker.as_mut();
@@ -32,7 +32,7 @@ async fn main() {
     let resp = worker.execute(req).await.unwrap();
     println!("-----\nstatus, {:?}", resp.status);
     for (key, value) in resp.headers {
-        println!("header, {}: {}", key, value);
+        println!("header, {key}: {value}");
     }
     println!("body, {:?}", resp.body.unwrap().len());
 }

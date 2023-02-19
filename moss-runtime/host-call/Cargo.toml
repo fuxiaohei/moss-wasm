@@ -3,9 +3,16 @@ name = "moss-host-call"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
+description = "A library for making host calls to the Moss runtime."
 
 [dependencies]
 anyhow = { workspace = true }
 async-trait = { workspace = true }
 reqwest = { version = "0.11.14", features = ["rustls-tls"] }
 wasmtime = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+
+[lib]
+doctest = false

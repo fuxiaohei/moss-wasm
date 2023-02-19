@@ -12,5 +12,6 @@ log = { version = "0.4.17", features = ["max_level_warn", "release_max_level_err
 moss-host-call = { path = "../moss-runtime/host-call" }
 moss-lib = { path = "../moss-lib" }
 moss-runtime = { path = "../moss-runtime" }
+rust-embed = "6.4.2"
 tokio = { workspace = true }
 tracing = { workspace = true }

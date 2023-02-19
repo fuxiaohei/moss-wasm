@@ -72,7 +72,7 @@ impl http_fetch::HttpFetch for FetchImpl {
         {
             Ok(r) => r,
             Err(e) => {
-                println!("request failed: {}", e,);
+                println!("request failed: {e}");
                 return Ok(Err(FetchError::InvalidRequest));
             }
         };
@@ -88,5 +88,28 @@ impl http_fetch::HttpFetch for FetchImpl {
         };
         println!("[Fetch] response: {}, id={}", resp.status, self.req_id,);
         Ok(Ok(resp))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn run_fetch_impl() {
+        use http_fetch::HttpFetch;
+        let mut fetch_impl = FetchImpl::new(0);
+        let req = Request {
+            method: "GET".to_string(),
+            uri: "https://www.rust-lang.org".to_string(),
+            headers: vec![],
+            body: None,
+        };
+        let resp = fetch_impl
+            .fetch(req, FetchOptions::default())
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(resp.status, 200);
     }
 }

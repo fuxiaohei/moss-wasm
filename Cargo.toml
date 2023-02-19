@@ -17,7 +17,7 @@ members = [
 ]
 
 [workspace.package]
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
@@ -51,6 +51,8 @@ wasi-host = { git = "https://github.com/bytecodealliance/preview2-prototyping", 
 wasi-cap-std-sync = { git = "https://github.com/bytecodealliance/preview2-prototyping" }
 async-trait = "0.1.64"
 hyper = { version = "0.14.24", features = ["full"] }
+serde = { version = "1.0.152", features = ["derive"] }
+toml = "0.7.2"
 
 [build-dependencies]
 moss-runtime = { path = "moss-runtime" }

@@ -12,7 +12,8 @@ use std::pin::Pin;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::task::{Context, Poll};
-use tracing::{error, info};
+use tokio::time::Instant;
+use tracing::{error, error_span, info, info_span};
 
 struct HttpService {
     req_id: Arc<AtomicU64>,
@@ -71,7 +72,26 @@ impl Service<Request<Body>> for HttpRequestContext {
         let req_id = self.req_id.fetch_add(1, Ordering::SeqCst);
         let worker_pool = self.worker_pool.clone();
         let fut = async move {
-            let mut worker = worker_pool.get().await.unwrap();
+            let start_time = Instant::now();
+            let mut worker = match worker_pool.get().await {
+                Ok(w) => w,
+                Err(e) => {
+                    error_span!(
+                        "[Req]",
+                        req_id = req_id,
+                        method = req.method().as_str(),
+                        uri = req.uri().path()
+                    )
+                    .in_scope(|| {
+                        error!("get worker failed: {}", e);
+                    });
+                    error!(elapsed = ?start_time.elapsed(), "get worker failed: {}", e);
+                    return Ok(create_error_response(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("get worker failed: {e}"),
+                    ));
+                }
+            };
 
             // convert hyper request to host-call request
             let mut headers: Vec<(&str, &str)> = vec![];
@@ -92,7 +112,25 @@ impl Service<Request<Body>> for HttpRequestContext {
             };
 
             // call worker execute
-            let host_resp: HostResponse = worker.execute(host_req).await.unwrap();
+            let host_resp: HostResponse = match worker.execute(host_req).await {
+                Ok(r) => r,
+                Err(e) => {
+                    error_span!(
+                        "[Req]",
+                        req_id = req_id,
+                        method = method.as_str(),
+                        uri = url.as_str()
+                    )
+                    .in_scope(|| {
+                        error!(elapsed = ?start_time.elapsed(),"execute failed: {e}");
+                    });
+                    error!("execute failed: {e}");
+                    return Ok(create_error_response(
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!("execute failed: {e}"),
+                    ));
+                }
+            };
 
             // convert wasm response to hyper response
             let mut builder = Response::builder().status(host_resp.status);
@@ -100,7 +138,18 @@ impl Service<Request<Body>> for HttpRequestContext {
                 builder = builder.header(k, v);
             }
             let resp = builder.body(Body::from(host_resp.body.unwrap())).unwrap();
-            
+
+            info_span!(
+                "[Req]",
+                req_id = req_id,
+                method = method.as_str(),
+                uri = url.as_str(),
+                status = resp.status().as_u16()
+            )
+            .in_scope(|| {
+                info!(elapsed = ?start_time.elapsed(),  "request finished");
+            });
+
             Ok(resp)
         };
 
@@ -121,7 +170,7 @@ pub async fn start(addr: SocketAddr, wasm_file: &str) {
     let server = match hyper::Server::try_bind(&addr) {
         Ok(server) => server.serve(svc),
         Err(e) => {
-            error!("starting failed to bind: {}", e);
+            error!("starting failed to bind: {e}");
             return;
         }
     };
@@ -130,6 +179,6 @@ pub async fn start(addr: SocketAddr, wasm_file: &str) {
 
     // Run this server for... forever!
     if let Err(e) = server.await {
-        error!("starting error: {}", e);
+        error!("starting error: {e}");
     }
 }

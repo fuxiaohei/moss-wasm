@@ -9,6 +9,7 @@ anyhow = { workspace = true }
 async-trait = { workspace = true }
 deadpool = { version = "0.9.5", features = ["rt_tokio_1"] }
 moss-host-call = { path = "./host-call" }
+tokio = { workspace = true }
 tracing = { workspace = true }
 wasi-cap-std-sync = { workspace = true }
 wasi-host = { workspace = true }
@@ -17,3 +18,9 @@ wit-bindgen-core = { workspace = true }
 wit-bindgen-gen-guest-rust = { workspace = true }
 wit-component = { workspace = true }
 wit-parser = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+
+[lib]
+doctest = false

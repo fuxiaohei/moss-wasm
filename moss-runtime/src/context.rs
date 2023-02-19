@@ -6,6 +6,12 @@ pub struct Context {
     fetch_impl: FetchImpl,
 }
 
+impl Default for Context {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Context {
     pub fn new() -> Self {
         Context {

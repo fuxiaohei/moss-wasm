@@ -10,3 +10,6 @@ bytes = { workspace = true }
 http = { workspace = true }
 moss-sdk-macro = { path = "./macro" }
 wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen" }
+
+[lib]
+doctest = false
