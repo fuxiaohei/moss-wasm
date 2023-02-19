@@ -28,5 +28,4 @@ jobs:
           cargo clippy --version
       - name: Run examples
         run: |
-          cargo build -p rust-basic --target wasm32-wasi --release && cargo run --release rust-basic
-          cargo build -p rust-fetch --target wasm32-wasi --release && cargo run --release rust-fetch
+          ./tests/test_examples.sh

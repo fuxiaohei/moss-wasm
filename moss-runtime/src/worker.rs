@@ -117,7 +117,7 @@ impl Worker {
         // get exports and call handle_request
         let instance_pre = self.instance_pre.as_ref().unwrap();
         let (exports, _instance) =
-            http_impl::HttpHandler::instantiate_pre(&mut store, &instance_pre).await?;
+            http_impl::HttpHandler::instantiate_pre(&mut store, instance_pre).await?;
         let resp = exports
             .http_handler()
             .call_handle_request(&mut store, req)
