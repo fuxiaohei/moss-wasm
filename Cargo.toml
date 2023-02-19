@@ -22,6 +22,7 @@ edition = "2021"
 authors = ["fuxiaohei <fudong0797@gmail.com>"]
 
 [dependencies]
+clap = { version = "4.1.6", features = ["derive"] }
 moss-host-call = { path = "moss-runtime/host-call" }
 moss-runtime = { path = "moss-runtime" }
 tokio = { workspace = true }

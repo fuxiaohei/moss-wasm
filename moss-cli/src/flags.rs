@@ -102,7 +102,6 @@ impl Init {
             }
         });
     }
-    
 }
 
 #[derive(Args, Debug)]
@@ -154,7 +153,10 @@ impl Serve {
         }
         info!("Serve component: {}", &output);
 
-        crate::server::start(self.addr.unwrap(), &output)
+        let is_wasi = meta.is_wasi();
+        info!("Enable wasm32-wasi");
+
+        crate::server::start(self.addr.unwrap(), &output, is_wasi)
             .instrument(debug_span!("[Http]"))
             .await;
     }

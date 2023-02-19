@@ -8,12 +8,14 @@ use tracing::{debug, debug_span};
 #[derive(Debug)]
 pub struct Manager {
     path: String,
+    is_wasi: bool,
 }
 
 impl Manager {
-    pub fn new(path: &str) -> Self {
+    pub fn new(path: &str, is_wasi: bool) -> Self {
         Self {
             path: String::from(path),
+            is_wasi,
         }
     }
 }
@@ -25,7 +27,7 @@ impl managed::Manager for Manager {
 
     async fn create(&self) -> Result<Self::Type, Self::Error> {
         let start_time = Instant::now();
-        let worker = Worker::new(&self.path).await?;
+        let worker = Worker::new(&self.path, self.is_wasi).await?;
         debug_span!("[Worker]", path = &self.path).in_scope(|| {
             debug!(eplased = ?start_time.elapsed(), "create, ok");
         });
@@ -40,8 +42,8 @@ impl managed::Manager for Manager {
 pub type WorkerPool = managed::Pool<Manager>;
 
 /// create a pool
-pub fn create(path: &str) -> Result<WorkerPool> {
-    let mgr = Manager::new(path);
+pub fn create(path: &str, is_wasi: bool) -> Result<WorkerPool> {
+    let mgr = Manager::new(path, is_wasi);
     Ok(managed::Pool::builder(mgr).build().unwrap())
 }
 
@@ -51,7 +53,7 @@ mod tests {
     #[tokio::test]
     async fn run_worker_pool_test() {
         let wasm_file = "../tests/data/rust_basic.component.wasm";
-        let pool = super::create(wasm_file).unwrap();
+        let pool = super::create(wasm_file, true).unwrap();
 
         let status = pool.status();
         assert_eq!(status.size, 0);
@@ -69,7 +71,7 @@ mod tests {
                 body: Some("xxxyyy".as_bytes()),
             };
 
-            let resp = worker.execute(req).await.unwrap();
+            let resp = worker.handle_request(req).await.unwrap();
             assert_eq!(resp.status, 200);
             assert_eq!(resp.body, Some("Hello, World".as_bytes().to_vec()));
 

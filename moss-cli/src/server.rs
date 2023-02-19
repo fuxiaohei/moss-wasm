@@ -21,10 +21,10 @@ struct HttpService {
 }
 
 impl HttpService {
-    fn new(wasm_file: &str) -> Self {
+    fn new(wasm_file: &str, is_wasi: bool) -> Self {
         Self {
             req_id: Arc::new(AtomicU64::new(0)),
-            worker_pool: Arc::new(pool::create(wasm_file).unwrap()),
+            worker_pool: Arc::new(pool::create(wasm_file, is_wasi).unwrap()),
         }
     }
 }
@@ -112,7 +112,7 @@ impl Service<Request<Body>> for HttpRequestContext {
             };
 
             // call worker execute
-            let host_resp: HostResponse = match worker.execute(host_req).await {
+            let host_resp: HostResponse = match worker.handle_request(host_req).await {
                 Ok(r) => r,
                 Err(e) => {
                     error_span!(
@@ -164,8 +164,8 @@ fn create_error_response(status: StatusCode, message: String) -> Response<Body> 
         .unwrap()
 }
 
-pub async fn start(addr: SocketAddr, wasm_file: &str) {
-    let svc = HttpService::new(wasm_file);
+pub async fn start(addr: SocketAddr, wasm_file: &str, is_wasi: bool) {
+    let svc = HttpService::new(wasm_file, is_wasi);
 
     let server = match hyper::Server::try_bind(&addr) {
         Ok(server) => server.serve(svc),

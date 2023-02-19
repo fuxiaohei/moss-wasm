@@ -1,20 +1,38 @@
+use clap::Parser;
 use moss_host_call::http_impl;
 use moss_runtime::compiler;
 use moss_runtime::pool;
 
+#[derive(Parser, Debug)]
+struct CliArgs {
+    name: String,
+    #[clap(long, default_value("true"))]
+    wasi: Option<bool>,
+}
+
 #[tokio::main]
 async fn main() {
-    let mut name = std::env::args().nth(1).unwrap();
-    name = name.replace('-', "_");
+    let start_time = tokio::time::Instant::now();
+
+    let args = CliArgs::parse();
+
+    let name = args.name.replace('-', "_");
     println!("Run name: {name}");
 
-    let target = format!("target/wasm32-wasi/release/{name}.wasm");
-    let output = format!("target/wasm32-wasi/release/{name}.component.wasm");
+    let arch = if args.wasi.unwrap() {
+        "wasm32-wasi"
+    } else {
+        "wasm32-unknown-unknown"
+    };
+    println!("Run arch: {arch}");
 
-    compiler::convert_component(&target, Some(output.to_string()));
+    let target = format!("target/{arch}/release/{name}.wasm");
+    let output = format!("target/{arch}/release/{name}.component.wasm");
+
+    compiler::convert_component(&target, Some(output.to_string())).unwrap();
     println!("Run component: {output}");
 
-    let worker_pool = pool::create(&output).unwrap();
+    let worker_pool = pool::create(&output, arch == "wasm32-wasi").unwrap();
     let status = worker_pool.status();
     println!("Pool status, {status:?}");
 
@@ -29,10 +47,13 @@ async fn main() {
         body: None,
     };
 
-    let resp = worker.execute(req).await.unwrap();
+    let resp = worker.handle_request(req).await.unwrap();
     println!("-----\nstatus, {:?}", resp.status);
     for (key, value) in resp.headers {
         println!("header, {key}: {value}");
     }
     println!("body, {:?}", resp.body.unwrap().len());
+    println!("elapsed, {:?}", start_time.elapsed());
+    println!("-----")
+    
 }

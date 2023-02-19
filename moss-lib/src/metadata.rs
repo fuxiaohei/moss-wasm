@@ -21,6 +21,7 @@ pub struct Metadata {
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct MetadataBuild {
     pub rust_target_dir: Option<String>,
+    pub rust_enable_wasi: Option<bool>,
 }
 
 impl Metadata {
@@ -46,7 +47,23 @@ impl Metadata {
 
     /// get arch from metadata
     pub fn get_arch(&self) -> String {
+        if self.language == "rust" {
+            let flag = self
+                .build
+                .clone()
+                .unwrap_or_default()
+                .rust_enable_wasi
+                .unwrap_or(false);
+            if !flag {
+                return "wasm32-unknown-unknown".to_string();
+            }
+        }
         "wasm32-wasi".to_string()
+    }
+
+    /// is wasi
+    pub fn is_wasi(&self) -> bool {
+        self.get_arch() == "wasm32-wasi"
     }
 
     /// get compiled target
@@ -85,6 +102,10 @@ mod tests {
             manifest.build.as_ref().unwrap().rust_target_dir,
             Some("./target".to_string())
         );
+        assert_eq!(
+            manifest.build.as_ref().unwrap().rust_enable_wasi,
+            Some(true)
+        );
     }
 
     /// test manifest to file
@@ -101,6 +122,10 @@ mod tests {
         assert_eq!(
             manifest.build.as_ref().unwrap().rust_target_dir,
             manifest2.build.as_ref().unwrap().rust_target_dir
+        );
+        assert_eq!(
+            manifest.build.as_ref().unwrap().rust_enable_wasi,
+            manifest2.build.as_ref().unwrap().rust_enable_wasi
         );
 
         std::fs::remove_file("../tests/data/metadata2.toml").unwrap();
