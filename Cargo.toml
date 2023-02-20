@@ -8,8 +8,10 @@ authors = { workspace = true }
 members = [
     "examples/rust-basic",
     "examples/rust-fetch",
+    "examples/rust-kv",
     "moss-cli",
     "moss-lib",
+    "moss-lib/storage",
     "moss-runtime",
     "moss-runtime/host-call",
     "moss-sdk",

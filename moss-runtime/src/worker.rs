@@ -2,6 +2,7 @@ use crate::context::Context;
 use anyhow::Result;
 use moss_host_call::fetch_impl;
 use moss_host_call::http_impl;
+use moss_host_call::kv_impl;
 use wasmtime::component::{Component, Instance, InstancePre, Linker};
 use wasmtime::{Config, Engine, Store};
 
@@ -61,9 +62,10 @@ impl Worker {
         let mut linker: Linker<Context> = Linker::new(&self.engine);
         wasi_host::add_to_linker(&mut linker, Context::wasi)?;
         fetch_impl::http_fetch::add_to_linker(&mut linker, Context::fetch_impl)?;
+        kv_impl::kv_storage::add_to_linker(&mut linker, Context::kv_storage)?;
 
         // create store
-        let mut store = Store::new(&self.engine, Context::new());
+        let mut store = Store::new(&self.engine, Context::new(None));
         let (exports, instance) =
             http_impl::HttpHandler::instantiate_async(&mut store, &self.component, &linker).await?;
         self.is_trapped = false;
@@ -78,6 +80,8 @@ impl Worker {
         let mut linker: Linker<Context> = Linker::new(&self.engine);
         wasi_host::add_to_linker(&mut linker, Context::wasi)?;
         fetch_impl::http_fetch::add_to_linker(&mut linker, Context::fetch_impl)?;
+        kv_impl::kv_storage::add_to_linker(&mut linker, Context::kv_storage)?;
+
         // create instance_pre
         let instance_pre = linker.instantiate_pre(&self.component)?;
         self.instance_pre = Some(instance_pre);
@@ -112,7 +116,7 @@ impl Worker {
         req: http_impl::http_handler::Request<'_>,
     ) -> Result<http_impl::http_handler::Response> {
         // create store
-        let mut store = Store::new(&self.engine, Context::new());
+        let mut store = Store::new(&self.engine, Context::new(None));
 
         // get exports and call handle_request
         let instance_pre = self.instance_pre.as_ref().unwrap();

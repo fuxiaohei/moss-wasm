@@ -1,0 +1,15 @@
+[package]
+name = "rust-kv"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.68"
+bytes = "1.3.0"
+http = "0.2.8"
+moss-sdk = { path = "../../moss-sdk" }
+rand = "0.8.5"
+wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen" }
+
+[lib]
+crate-type = ["cdylib"]

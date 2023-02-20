@@ -18,4 +18,12 @@ pub mod http {
     pub type Error = super::fetch_impl::FetchError;
 }
 
+/// Re-export macro from moss-sdk-macro
 pub use moss_sdk_macro::http_main;
+
+mod kv_impl;
+
+/// Re-export kv_impl as kv
+pub mod kv {
+    pub use crate::kv_impl::*;
+}

@@ -1,0 +1,9 @@
+manifest = "v1"
+name = "rust-kv"
+description = "example rust project with kv operations"
+authors = []
+language = "rust"
+
+[build]
+rust_target_dir = "../../target"
+rust_enable_wasi = true

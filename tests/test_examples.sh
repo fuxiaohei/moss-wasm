@@ -11,3 +11,6 @@ cargo build -p rust-basic --target wasm32-wasi --release && cargo run --release 
 
 echo -e "\nrust-fetch:wasi:"
 cargo build -p rust-fetch --target wasm32-wasi --release && cargo run --release rust-fetch
+
+echo -e "\nrust-kv:wasi:"
+cargo build -p rust-kv --target wasm32-wasi --release && cargo run --release rust-kv

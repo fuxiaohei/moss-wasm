@@ -1228,6 +1228,7 @@ version = "0.1.3"
 dependencies = [
  "anyhow",
  "async-trait",
+ "moss-storage",
  "reqwest",
  "tokio",
  "wasmtime",
@@ -1256,6 +1257,8 @@ dependencies = [
  "deadpool",
  "host",
  "moss-host-call",
+ "moss-storage",
+ "once_cell",
  "tokio",
  "tracing",
  "wasi-cap-std-sync",
@@ -1286,6 +1289,15 @@ dependencies = [
  "http",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "moss-storage"
+version = "0.1.3"
+dependencies = [
+ "async-trait",
+ "tokio",
+ "tracing",
 ]
 
 [[package]]
@@ -1794,6 +1806,18 @@ dependencies = [
  "bytes",
  "http",
  "moss-sdk",
+ "wit-bindgen",
+]
+
+[[package]]
+name = "rust-kv"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bytes",
+ "http",
+ "moss-sdk",
+ "rand",
  "wit-bindgen",
 ]
 
