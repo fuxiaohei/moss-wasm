@@ -1292,6 +1292,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "moss-server"
+version = "0.1.3"
+dependencies = [
+ "clap",
+ "moss-lib",
+ "tracing",
+]
+
+[[package]]
 name = "moss-storage"
 version = "0.1.3"
 dependencies = [

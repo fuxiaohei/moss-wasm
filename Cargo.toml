@@ -16,6 +16,7 @@ members = [
     "moss-runtime/host-call",
     "moss-sdk",
     "moss-sdk/macro",
+    "moss-server",
 ]
 
 [workspace.package]
