@@ -146,6 +146,7 @@ impl Serve {
 
         let meta =
             Metadata::from_file(DEFAULT_METADATA_FILE).expect("Project metadata.toml not found");
+        debug!("Metadata: {meta:?}");
 
         let output = meta.get_output();
         if !Path::new(&output).exists() {
@@ -153,10 +154,11 @@ impl Serve {
         }
         info!("Serve component: {}", &output);
 
-        let is_wasi = meta.is_wasi();
-        info!("Enable wasm32-wasi");
+        if meta.is_wasi() {
+            info!("Enable wasm32-wasi");
+        }
 
-        crate::server::start(self.addr.unwrap(), &output, is_wasi)
+        crate::server::start(self.addr.unwrap(), meta)
             .instrument(debug_span!("[Http]"))
             .await;
     }

@@ -63,5 +63,9 @@ async fn main() {
         );
     }
     println!("elapsed\t, {:?}", start_time.elapsed());
-    println!("-----")
+
+    if resp.status >= 400 {
+        panic!("error status: {:?}", resp.status)
+    }
+    println!("-----");
 }

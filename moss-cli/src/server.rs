@@ -4,7 +4,9 @@ use hyper::http::{Request, Response, StatusCode};
 use hyper::server::conn::AddrStream;
 use hyper::service::Service;
 use moss_host_call::http_impl::http_handler::{Request as HostRequest, Response as HostResponse};
+use moss_lib::metadata::Metadata;
 use moss_runtime::pool;
+use routefinder::Router;
 use std::convert::Infallible;
 use std::future::Future;
 use std::net::SocketAddr;
@@ -13,18 +15,24 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::task::{Context, Poll};
 use tokio::time::Instant;
-use tracing::{error, error_span, info, info_span};
+use tracing::{debug, error, error_span, info, info_span};
 
 struct HttpService {
     req_id: Arc<AtomicU64>,
     worker_pool: Arc<pool::WorkerPool>,
+    router: Arc<Router<i32>>,
 }
 
 impl HttpService {
-    fn new(wasm_file: &str, is_wasi: bool) -> Self {
+    fn new(meta: Metadata) -> Self {
+        let mut router = Router::new();
+        router.add(meta.get_route_base(), 1).unwrap();
+        debug!("Router: {:?}", router);
+
         Self {
             req_id: Arc::new(AtomicU64::new(0)),
-            worker_pool: Arc::new(pool::create(wasm_file, is_wasi).unwrap()),
+            worker_pool: Arc::new(pool::create(&meta.get_output(), meta.is_wasi()).unwrap()),
+            router: Arc::new(router),
         }
     }
 }
@@ -42,6 +50,7 @@ impl<'addr> Service<&'addr AddrStream> for HttpService {
         future::ok(HttpRequestContext::new(
             self.req_id.clone(),
             self.worker_pool.clone(),
+            self.router.clone(),
         ))
     }
 }
@@ -49,13 +58,19 @@ impl<'addr> Service<&'addr AddrStream> for HttpService {
 struct HttpRequestContext {
     req_id: Arc<AtomicU64>,
     worker_pool: Arc<pool::WorkerPool>,
+    router: Arc<Router<i32>>,
 }
 
 impl HttpRequestContext {
-    fn new(req_id: Arc<AtomicU64>, worker_pool: Arc<pool::WorkerPool>) -> Self {
+    fn new(
+        req_id: Arc<AtomicU64>,
+        worker_pool: Arc<pool::WorkerPool>,
+        router: Arc<Router<i32>>,
+    ) -> Self {
         Self {
             req_id,
             worker_pool,
+            router,
         }
     }
 }
@@ -71,6 +86,20 @@ impl Service<Request<Body>> for HttpRequestContext {
     fn call(&mut self, mut req: Request<Body>) -> Self::Future {
         let req_id = self.req_id.fetch_add(1, Ordering::SeqCst);
         let worker_pool = self.worker_pool.clone();
+
+        // do route match
+        let uri = req.uri().clone();
+        let path = uri.path();
+        let matches = self.router.matches(&path);
+        if matches.is_empty() {
+            return Box::pin(async move {
+                Ok(create_error_response(
+                    StatusCode::NOT_FOUND,
+                    "route mismatch".to_string(),
+                ))
+            });
+        }
+
         let fut = async move {
             let start_time = Instant::now();
             let mut worker = match worker_pool.get().await {
@@ -164,8 +193,8 @@ fn create_error_response(status: StatusCode, message: String) -> Response<Body> 
         .unwrap()
 }
 
-pub async fn start(addr: SocketAddr, wasm_file: &str, is_wasi: bool) {
-    let svc = HttpService::new(wasm_file, is_wasi);
+pub async fn start(addr: SocketAddr, meta: Metadata) {
+    let svc = HttpService::new(meta);
 
     let server = match hyper::Server::try_bind(&addr) {
         Ok(server) => server.serve(svc),
