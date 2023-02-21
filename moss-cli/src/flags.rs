@@ -125,7 +125,18 @@ impl Build {
         info!("Build target: {}", target);
 
         // call cargo to build wasm
-        compiler::compile_rust(&arch, &target).expect("Build failed");
+        match meta.language.as_str() {
+            "rust" => {
+                compiler::compile_rust(&arch, &target).expect("Build failed");
+            }
+            "js" => {
+                compiler::compile_js(&target, "src/index.js", self.js_engine.clone())
+                    .expect("Build failed");
+            }
+            _ => {
+                panic!("Unsupported language: {}", meta.language);
+            }
+        }
 
         // convert wasm module to component
         let output = meta.get_output();

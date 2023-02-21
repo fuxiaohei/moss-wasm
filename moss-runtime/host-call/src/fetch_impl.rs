@@ -7,6 +7,7 @@ wasmtime::component::bindgen!({
 use http_fetch::{FetchError, FetchOptions, RedirectPolicy, Request, Response};
 use reqwest::redirect;
 use std::str::FromStr;
+use tracing::{debug, instrument, warn};
 
 impl Default for FetchOptions {
     fn default() -> Self {
@@ -43,12 +44,13 @@ impl TryFrom<http_fetch::RedirectPolicy> for redirect::Policy {
 
 #[async_trait::async_trait]
 impl http_fetch::HttpFetch for FetchImpl {
+    #[instrument(skip_all, name = "[Fetch]", level = "debug", fields(req_id = self.req_id, counter = self.counter))]
     async fn fetch(
         &mut self,
         request: Request,
         options: FetchOptions,
     ) -> anyhow::Result<std::result::Result<Response, FetchError>> {
-        println!("request: {} {}", request.method, request.uri);
+        debug!("{} {}", request.method, request.uri);
 
         self.counter += 1;
 
@@ -72,7 +74,7 @@ impl http_fetch::HttpFetch for FetchImpl {
         {
             Ok(r) => r,
             Err(e) => {
-                println!("request failed: {e}");
+                warn!("failed: {e}");
                 return Ok(Err(FetchError::InvalidRequest));
             }
         };
@@ -81,12 +83,14 @@ impl http_fetch::HttpFetch for FetchImpl {
         for (key, value) in fetch_response.headers() {
             resp_headers.push((key.to_string(), value.to_str().unwrap().to_string()));
         }
+        let status = fetch_response.status().as_u16();
+        let body = fetch_response.bytes().await?;
         let resp = Response {
-            status: fetch_response.status().as_u16(),
+            status,
             headers: resp_headers,
-            body: Some(fetch_response.bytes().await?.to_vec()),
+            body: Some(body.to_vec()),
         };
-        println!("[Fetch] response: {}, id={}", resp.status, self.req_id,);
+        debug!("response: {}, len={}", resp.status, body.len());
         Ok(Ok(resp))
     }
 }

@@ -1208,7 +1208,7 @@ dependencies = [
 
 [[package]]
 name = "moss-cli"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "clap",
  "futures",
@@ -1225,19 +1225,20 @@ dependencies = [
 
 [[package]]
 name = "moss-host-call"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "async-trait",
  "moss-storage",
  "reqwest",
  "tokio",
+ "tracing",
  "wasmtime",
 ]
 
 [[package]]
 name = "moss-lib"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "lazy_static",
@@ -1251,7 +1252,7 @@ dependencies = [
 
 [[package]]
 name = "moss-runtime"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1264,6 +1265,7 @@ dependencies = [
  "tracing",
  "wasi-cap-std-sync",
  "wasmtime",
+ "which",
  "wit-bindgen-core",
  "wit-bindgen-gen-guest-rust",
  "wit-component",
@@ -1272,7 +1274,7 @@ dependencies = [
 
 [[package]]
 name = "moss-sdk"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "bytes",
@@ -1283,7 +1285,7 @@ dependencies = [
 
 [[package]]
 name = "moss-sdk-macro"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "bytes",
@@ -1294,7 +1296,7 @@ dependencies = [
 
 [[package]]
 name = "moss-server"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "clap",
  "moss-lib",
@@ -1303,7 +1305,7 @@ dependencies = [
 
 [[package]]
 name = "moss-storage"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "async-trait",
  "tokio",
@@ -1312,7 +1314,7 @@ dependencies = [
 
 [[package]]
 name = "moss-wasm"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "clap",
  "moss-host-call",
@@ -3036,6 +3038,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6c71e40d7d2c34a5106301fb632274ca37242cd0c9d3e64dbece371a40a2d87"
 dependencies = [
  "webpki",
+]
+
+[[package]]
+name = "which"
+version = "4.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2441c784c52b289a054b7201fc93253e288f094e2f4be9058343127c4226a269"
+dependencies = [
+ "either",
+ "libc",
+ "once_cell",
 ]
 
 [[package]]

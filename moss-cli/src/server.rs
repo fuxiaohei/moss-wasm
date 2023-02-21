@@ -153,7 +153,6 @@ impl Service<Request<Body>> for HttpRequestContext {
                     .in_scope(|| {
                         error!(elapsed = ?start_time.elapsed(),"execute failed: {e}");
                     });
-                    error!("execute failed: {e}");
                     return Ok(create_error_response(
                         StatusCode::INTERNAL_SERVER_ERROR,
                         format!("execute failed: {e}"),

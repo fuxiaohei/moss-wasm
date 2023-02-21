@@ -16,6 +16,7 @@ tracing = { workspace = true }
 wasi-cap-std-sync = { workspace = true }
 wasi-host = { workspace = true }
 wasmtime = { workspace = true }
+which = "4.4.0"
 wit-bindgen-core = { workspace = true }
 wit-bindgen-gen-guest-rust = { workspace = true }
 wit-component = { workspace = true }
