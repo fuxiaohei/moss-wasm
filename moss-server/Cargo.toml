@@ -8,5 +8,5 @@ authors = { workspace = true }
 clap = { version = "4.1.6", features = ["derive"] }
 moss-lib = { path = "../moss-lib" }
 moss-rpc = { path = "../moss-lib/rpc" }
-tracing = { workspace = true }
 tokio = { workspace = true }
+tracing = { workspace = true }

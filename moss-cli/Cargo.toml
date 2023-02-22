@@ -5,6 +5,8 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
+bytes = { workspace = true }
 clap = { version = "4.1.6", features = ["derive"] }
 futures = "0.3.26"
 hyper = { workspace = true }
@@ -12,13 +14,12 @@ log = { version = "0.4.17", features = [
     "max_level_warn",
     "release_max_level_error"
 ] }
-bytes = { workspace = true }
 moss-host-call = { path = "../moss-runtime/host-call" }
 moss-lib = { path = "../moss-lib" }
+moss-rpc = { path = "../moss-lib/rpc" }
 moss-runtime = { path = "../moss-runtime" }
 routefinder = "0.5.2"
 rust-embed = "6.4.2"
 tokio = { workspace = true }
 tracing = { workspace = true }
 zip = "0.6.4"
-anyhow = { workspace = true }

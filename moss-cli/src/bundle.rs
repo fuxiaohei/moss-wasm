@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use anyhow::Result;
+use anyhow::{Ok, Result};
 use moss_lib::metadata::DEFAULT_METADATA_FILE;
 use std::path::Path;
 
@@ -22,4 +22,9 @@ pub fn build(output: &str, metadata: &str) -> Result<String> {
 
     zip.flush()?;
     Ok(bundle_file)
+}
+
+pub async fn deploy(_bundle: &str) -> Result<()> {
+    moss_rpc::rpc_client::upload_bundle().await.unwrap();
+    Ok(())
 }

@@ -1405,6 +1405,7 @@ dependencies = [
  "log",
  "moss-host-call",
  "moss-lib",
+ "moss-rpc",
  "moss-runtime",
  "routefinder",
  "rust-embed",

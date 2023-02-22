@@ -194,6 +194,9 @@ impl Deploy {
         info!("Find component: {}", &output);
 
         // generate an bundled file
-        bundle::build(&output, DEFAULT_METADATA_FILE).unwrap();
+        let bundle_file = bundle::build(&output, DEFAULT_METADATA_FILE).unwrap();
+
+        // upload bundle
+        bundle::deploy(&bundle_file).await.unwrap();
     }
 }
