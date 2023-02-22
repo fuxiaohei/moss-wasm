@@ -12,6 +12,7 @@ members = [
     "moss-cli",
     "moss-lib",
     "moss-lib/storage",
+    "moss-lib/rpc",
     "moss-runtime",
     "moss-runtime/host-call",
     "moss-sdk",

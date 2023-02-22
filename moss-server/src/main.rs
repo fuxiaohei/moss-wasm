@@ -11,7 +11,8 @@ struct CliArgs {
     pub addr: SocketAddr,
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     moss_lib::tracing::init_tracing();
 
     let args = CliArgs::parse();
@@ -22,4 +23,7 @@ fn main() {
         error!("Config file {} not found", &args.config);
         return;
     }
+
+    // start rpc server
+    moss_rpc::rpc_server::start(args.addr).await.unwrap();
 }

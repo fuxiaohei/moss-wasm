@@ -1,5 +1,6 @@
 use clap::Parser;
 
+mod bundle;
 mod embed;
 mod flags;
 mod server;
@@ -18,6 +19,8 @@ enum MossCli {
     Build(flags::Build),
     /// Serve runs the project
     Serve(flags::Serve),
+    /// Deploy this project to the cloud
+    Deploy(flags::Deploy),
 }
 
 #[tokio::main]
@@ -29,5 +32,6 @@ async fn main() {
         MossCli::Init(cmd) => cmd.run().await,
         MossCli::Build(cmd) => cmd.run().await,
         MossCli::Serve(cmd) => cmd.run().await,
+        MossCli::Deploy(cmd) => cmd.run().await,
     }
 }

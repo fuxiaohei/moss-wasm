@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package moss;
+
+message BundleUploadRequest {
+  string bundle_name = 1;
+  int64 bundle_size = 2;
+  string bundle_md5 = 3;
+  bytes content = 4;
+}
+
+message BundleUploadResponse {
+  int32 status_code = 1;
+  string message = 2;
+}
+
+service MossRpcService {
+  rpc UploadBundle(BundleUploadRequest) returns (BundleUploadResponse);
+}

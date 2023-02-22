@@ -1,12 +1,14 @@
 [package]
-name = "moss-server"
+name = "moss-rpc"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
-clap = { version = "4.1.6", features = ["derive"] }
-moss-lib = { path = "../moss-lib" }
-moss-rpc = { path = "../moss-lib/rpc" }
+prost = "0.11.6"
+tonic = "0.8.3"
 tracing = { workspace = true }
 tokio = { workspace = true }
+
+[build-dependencies]
+tonic-build = "0.8.3"

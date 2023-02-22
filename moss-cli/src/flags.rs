@@ -1,4 +1,4 @@
-use crate::embed;
+use crate::{bundle, embed};
 use clap::Args;
 use moss_lib::metadata::{Metadata, DEFAULT_METADATA_FILE};
 use moss_runtime::compiler;
@@ -172,5 +172,28 @@ impl Serve {
         crate::server::start(self.addr.unwrap(), meta)
             .instrument(debug_span!("[Http]"))
             .await;
+    }
+}
+
+#[derive(Args, Debug)]
+pub struct Deploy {}
+
+impl Deploy {
+    pub async fn run(&self) {
+        debug!("Deploy: {self:?}");
+
+        let meta =
+            Metadata::from_file(DEFAULT_METADATA_FILE).expect("Project metadata.toml not found");
+        debug!("Metadata: {meta:?}");
+
+        // make sure output file is generated
+        let output = meta.get_output();
+        if !Path::new(&output).exists() {
+            panic!("Component {} not found, please build first", &output);
+        }
+        info!("Find component: {}", &output);
+
+        // generate an bundled file
+        bundle::build(&output, DEFAULT_METADATA_FILE).unwrap();
     }
 }
