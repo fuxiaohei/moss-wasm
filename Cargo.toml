@@ -46,12 +46,9 @@ tracing-subscriber = { version = "0.3.16", features = [
 lazy_static = "1.4.0"
 wit-bindgen-core = { git = "https://github.com/bytecodealliance/wit-bindgen" }
 wit-bindgen-gen-guest-rust = { git = "https://github.com/bytecodealliance/wit-bindgen" }
-wit-component = "0.7.0"
-wit-parser = "0.6.1"
-wasmtime = { git = "https://github.com/bytecodealliance/wasmtime", features = [
-    "component-model",
-    "async"
-], branch = "release-6.0.0" }
+wit-component = "0.7.1"
+wit-parser = "0.6.2"
+wasmtime = { version = "6.0.0", features = ["component-model", "async"] }
 wasi-host = { git = "https://github.com/bytecodealliance/preview2-prototyping", package = "host" }
 wasi-cap-std-sync = { git = "https://github.com/bytecodealliance/preview2-prototyping" }
 async-trait = "0.1.64"

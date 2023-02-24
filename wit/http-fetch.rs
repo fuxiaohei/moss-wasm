@@ -21,13 +21,13 @@ pub mod http_fetch {
     pub type HttpUri<'a> = &'a str;
     pub type HttpStatus = u16;
     pub type HttpMethod<'a> = &'a str;
-    pub type HttpHeadersParam<'a> = &'a [(&'a str, &'a str)];
     pub type HttpHeadersResult = wit_bindgen::rt::vec::Vec<(
         wit_bindgen::rt::string::String,
         wit_bindgen::rt::string::String,
     )>;
-    pub type HttpBodyParam<'a> = &'a [u8];
+    pub type HttpHeadersParam<'a> = &'a [(&'a str, &'a str)];
     pub type HttpBodyResult = wit_bindgen::rt::vec::Vec<u8>;
+    pub type HttpBodyParam<'a> = &'a [u8];
     #[derive(Clone)]
     pub struct Response {
         pub status: HttpStatus,
@@ -384,7 +384,7 @@ pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 1152] = [
     26, 112, 107, 103, 58, 47, 104, 116, 116, 112, 45, 102, 101, 116, 99, 104, 47, 104, 116, 116,
     112, 45, 102, 101, 116, 99, 104, 4, 1, 0, 78, 9, 112, 114, 111, 100, 117, 99, 101, 114, 115, 1,
     12, 112, 114, 111, 99, 101, 115, 115, 101, 100, 45, 98, 121, 2, 13, 119, 105, 116, 45, 99, 111,
-    109, 112, 111, 110, 101, 110, 116, 5, 48, 46, 55, 46, 48, 26, 119, 105, 116, 45, 98, 105, 110,
+    109, 112, 111, 110, 101, 110, 116, 5, 48, 46, 55, 46, 49, 26, 119, 105, 116, 45, 98, 105, 110,
     100, 103, 101, 110, 45, 103, 101, 110, 45, 103, 117, 101, 115, 116, 45, 114, 117, 115, 116, 5,
     48, 46, 51, 46, 48, 11, 31, 1, 10, 104, 116, 116, 112, 45, 102, 101, 116, 99, 104, 15, 112,
     107, 103, 58, 47, 104, 116, 116, 112, 45, 102, 101, 116, 99, 104, 3, 0, 0,

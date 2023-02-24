@@ -3,9 +3,9 @@
 #[allow(clippy::all)]
 pub mod kv_storage {
     /// A value is a value of bytes.
-    pub type ValueParam<'a> = &'a [u8];
-    /// A value is a value of bytes.
     pub type ValueResult = wit_bindgen::rt::vec::Vec<u8>;
+    /// A value is a value of bytes.
+    pub type ValueParam<'a> = &'a [u8];
     /// kv operation errors
     #[repr(u8)]
     #[derive(Clone, Copy, PartialEq, Eq)]
@@ -54,9 +54,9 @@ pub mod kv_storage {
 
     impl std::error::Error for KvError {}
     /// A key is a unique identifier for a value in storage.
-    pub type KeyParam<'a> = &'a str;
-    /// A key is a unique identifier for a value in storage.
     pub type KeyResult = wit_bindgen::rt::string::String;
+    /// A key is a unique identifier for a value in storage.
+    pub type KeyParam<'a> = &'a str;
     /// A key-value pair.
     pub type Pair = (KeyResult, ValueResult);
     #[allow(clippy::all)]
@@ -335,7 +335,7 @@ pub static __WIT_BINDGEN_COMPONENT_TYPE: [u8; 744] = [
     45, 115, 116, 111, 114, 97, 103, 101, 47, 107, 118, 45, 115, 116, 111, 114, 97, 103, 101, 4, 1,
     0, 78, 9, 112, 114, 111, 100, 117, 99, 101, 114, 115, 1, 12, 112, 114, 111, 99, 101, 115, 115,
     101, 100, 45, 98, 121, 2, 13, 119, 105, 116, 45, 99, 111, 109, 112, 111, 110, 101, 110, 116, 5,
-    48, 46, 55, 46, 48, 26, 119, 105, 116, 45, 98, 105, 110, 100, 103, 101, 110, 45, 103, 101, 110,
+    48, 46, 55, 46, 49, 26, 119, 105, 116, 45, 98, 105, 110, 100, 103, 101, 110, 45, 103, 101, 110,
     45, 103, 117, 101, 115, 116, 45, 114, 117, 115, 116, 5, 48, 46, 51, 46, 48, 11, 31, 1, 10, 107,
     118, 45, 115, 116, 111, 114, 97, 103, 101, 15, 112, 107, 103, 58, 47, 107, 118, 45, 115, 116,
     111, 114, 97, 103, 101, 3, 0, 0,
