@@ -3,10 +3,10 @@ use hyper::body::Body;
 use hyper::http::{Request, Response, StatusCode};
 use hyper::server::conn::AddrStream;
 use hyper::service::Service;
+use matchit::Router;
 use moss_host_call::http_impl::http_handler::{Request as HostRequest, Response as HostResponse};
 use moss_lib::metadata::Metadata;
 use moss_runtime::pool;
-use routefinder::Router;
 use std::convert::Infallible;
 use std::future::Future;
 use std::net::SocketAddr;
@@ -15,7 +15,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::task::{Context, Poll};
 use tokio::time::Instant;
-use tracing::{debug, error, error_span, info, info_span};
+use tracing::{error, error_span, info, info_span};
 
 struct HttpService {
     req_id: Arc<AtomicU64>,
@@ -26,8 +26,7 @@ struct HttpService {
 impl HttpService {
     fn new(meta: Metadata) -> Self {
         let mut router = Router::new();
-        router.add(meta.get_route_base(), 1).unwrap();
-        debug!("Router: {:?}", router);
+        router.insert(meta.get_route_base(), 1).unwrap();
 
         Self {
             req_id: Arc::new(AtomicU64::new(0)),
@@ -90,8 +89,8 @@ impl Service<Request<Body>> for HttpRequestContext {
         // do route match
         let uri = req.uri().clone();
         let path = uri.path();
-        let matches = self.router.matches(&path);
-        if matches.is_empty() {
+        let matched = self.router.at(&path);
+        if matched.is_err() {
             return Box::pin(async move {
                 Ok(create_error_response(
                     StatusCode::NOT_FOUND,
