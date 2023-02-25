@@ -8,6 +8,8 @@ authors = { workspace = true }
 anyhow = { workspace = true }
 bytes = { workspace = true }
 http = { workspace = true }
+lazy_static = { workspace = true }
+matchit = "0.7.0"
 moss-sdk-macro = { path = "./macro" }
 wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen" }
 

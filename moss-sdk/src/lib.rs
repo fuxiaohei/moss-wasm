@@ -1,4 +1,5 @@
 mod fetch_impl;
+mod router_impl;
 
 pub mod http {
     use bytes::Bytes;
@@ -16,6 +17,10 @@ pub mod http {
     pub use super::fetch_impl::FetchOptions;
     pub use super::fetch_impl::RedirectPolicy;
     pub type Error = super::fetch_impl::FetchError;
+
+    pub mod router {
+        pub use super::super::router_impl::*;
+    }
 }
 
 /// Re-export macro from moss-sdk-macro

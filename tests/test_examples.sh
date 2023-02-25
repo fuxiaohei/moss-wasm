@@ -37,4 +37,9 @@ cargo build -p rust-fetch --target wasm32-wasi --release && $cmd rust-fetch
 echo -e "\nrust-kv:wasi:"
 cargo build -p rust-kv --target wasm32-wasi --release && $cmd rust-kv
 
+echo -e "\nrust-router:wasi:"
+cargo build -p rust-router --target wasm32-wasi --release
+$cmd rust-router --url=/hello
+$cmd rust-router --url=/foo/bar
+
 rm -f moss-cli-bin moss-wasm-runner

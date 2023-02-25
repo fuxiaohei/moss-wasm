@@ -8,6 +8,8 @@ struct CliArgs {
     name: String,
     #[clap(long, default_value("true"))]
     wasi: Option<bool>,
+    #[clap(long)]
+    url: Option<String>,
 }
 
 #[tokio::main]
@@ -40,9 +42,10 @@ async fn main() {
     let worker = worker.as_mut();
 
     let headers = vec![("Content-Type", "application/json")];
+    let url = args.url.unwrap_or("/abc".to_string());
     let req = http_impl::http_handler::Request {
         method: "GET",
-        uri: "/abc",
+        uri: url.as_str(),
         headers: &headers,
         body: None,
     };

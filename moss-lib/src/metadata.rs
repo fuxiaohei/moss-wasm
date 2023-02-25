@@ -37,7 +37,7 @@ impl Default for MetadataDeploy {
     fn default() -> Self {
         Self {
             trigger: "http".to_string(),
-            route_base: Some("/*".to_string()),
+            route_base: Some("/*path".to_string()),
         }
     }
 }
@@ -118,7 +118,7 @@ impl Metadata {
             .clone()
             .unwrap_or_default()
             .route_base
-            .unwrap_or_else(|| "/*".to_string())
+            .unwrap_or_else(|| "/*path".to_string())
     }
 }
 

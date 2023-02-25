@@ -1491,6 +1491,8 @@ dependencies = [
  "anyhow",
  "bytes",
  "http",
+ "lazy_static",
+ "matchit",
  "moss-sdk-macro",
  "wit-bindgen",
 ]
@@ -2174,6 +2176,17 @@ dependencies = [
  "http",
  "moss-sdk",
  "rand",
+ "wit-bindgen",
+]
+
+[[package]]
+name = "rust-router"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bytes",
+ "http",
+ "moss-sdk",
  "wit-bindgen",
 ]
 
