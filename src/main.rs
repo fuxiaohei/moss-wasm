@@ -6,8 +6,6 @@ use moss_runtime::pool;
 #[derive(Parser, Debug)]
 struct CliArgs {
     name: String,
-    #[clap(long, default_value("true"))]
-    wasi: Option<bool>,
     #[clap(long)]
     url: Option<String>,
 }
@@ -21,11 +19,7 @@ async fn main() {
     let name = args.name.replace('-', "_");
     println!("Run name\t: {name}");
 
-    let arch = if args.wasi.unwrap() {
-        "wasm32-wasi"
-    } else {
-        "wasm32-unknown-unknown"
-    };
+    let arch = "wasm32-wasi";
     println!("Run arch\t: {arch}");
 
     let target = format!("target/{arch}/release/{name}.wasm");
@@ -34,7 +28,7 @@ async fn main() {
     compiler::convert_component(&target, Some(output.to_string())).unwrap();
     println!("Run component\t: {output}");
 
-    let worker_pool = pool::create(&output, arch == "wasm32-wasi").unwrap();
+    let worker_pool = pool::create(&output).unwrap();
     let status = worker_pool.status();
     println!("Pool status\t, {status:?}");
 
@@ -57,7 +51,7 @@ async fn main() {
     }
 
     let body_length = resp.body.as_ref().unwrap().len();
-    println!("body_length\t, {:?}", body_length);
+    println!("body_length\t, {body_length:?}");
 
     if body_length < 128 {
         println!(

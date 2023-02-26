@@ -184,7 +184,7 @@ pub fn compile_js(target: &str, src_js_path: &str, js_engine_path: Option<String
     let mut child = Command::new(cmd)
         .arg(&engine_file)
         .arg("-o")
-        .arg(&target)
+        .arg(target)
         .arg("--allow-wasi")
         .arg("--inherit-stdio=true")
         .arg("--inherit-env=true")

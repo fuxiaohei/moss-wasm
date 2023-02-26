@@ -30,7 +30,7 @@ impl HttpService {
 
         Self {
             req_id: Arc::new(AtomicU64::new(0)),
-            worker_pool: Arc::new(pool::create(&meta.get_output(), meta.is_wasi()).unwrap()),
+            worker_pool: Arc::new(pool::create(&meta.get_output()).unwrap()),
             router: Arc::new(router),
         }
     }
