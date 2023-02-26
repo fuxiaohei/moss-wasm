@@ -2,6 +2,19 @@ syntax = "proto3";
 
 package moss;
 
+// Request message for acquiring access and secret tokens
+message TokenRequest {
+  string token = 1;
+}
+
+// Response message for acquiring access and secret tokens
+message TokenResponse {
+  string access_token = 1;
+  string secret_token = 2;
+  int32 expiration = 3;
+}
+
+// Request message for uploading a bundle
 message BundleUploadRequest {
   string bundle_name = 1;
   int64 bundle_size = 2;
@@ -9,11 +22,15 @@ message BundleUploadRequest {
   bytes content = 4;
 }
 
+// Response message for uploading a bundle
 message BundleUploadResponse {
   int32 status_code = 1;
   string message = 2;
 }
 
 service MossRpcService {
+  // RPC method for acquiring access and secret tokens
+  rpc GetToken(TokenRequest) returns (TokenResponse);
+  // RPC method for uploading a bundle
   rpc UploadBundle(BundleUploadRequest) returns (BundleUploadResponse);
 }

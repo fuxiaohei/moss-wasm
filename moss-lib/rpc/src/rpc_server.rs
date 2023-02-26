@@ -1,5 +1,5 @@
 use crate::moss_rpc::moss_rpc_service_server::{MossRpcService, MossRpcServiceServer};
-use crate::moss_rpc::{BundleUploadRequest, BundleUploadResponse};
+use crate::moss_rpc::{BundleUploadRequest, BundleUploadResponse, TokenRequest, TokenResponse};
 use std::net::SocketAddr;
 use tonic::{metadata::MetadataValue, transport::Server, Request, Response, Status};
 
@@ -18,6 +18,25 @@ impl MossRpcService for MossRpcImpl {
             message: "response ok".to_string(),
         };
         Ok(Response::new(resp))
+    }
+
+    async fn get_token(
+        &self,
+        request: Request<TokenRequest>,
+    ) -> Result<Response<TokenResponse>, Status> {
+        println!("Got a request from {:?}", request.remote_addr());
+        let token_str = request.into_inner().token;
+        match moss_service::get_user_token(token_str).await {
+            Ok(token) => {
+                let resp = TokenResponse {
+                    access_token: token.access_token,
+                    secret_token: token.secret_token,
+                    expiration: 3600,
+                };
+                Ok(Response::new(resp))
+            }
+            Err(e) => Err(Status::internal(e.to_string())),
+        }
     }
 }
 

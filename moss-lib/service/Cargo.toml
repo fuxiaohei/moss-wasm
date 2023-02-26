@@ -1,0 +1,10 @@
+[package]
+name = "moss-service"
+version = { workspace = true }
+edition = { workspace = true }
+authors = { workspace = true }
+
+[dependencies]
+thiserror = "1.0.38"
+moss-storage = { path = "../storage" }
+sea-orm = { workspace = true }

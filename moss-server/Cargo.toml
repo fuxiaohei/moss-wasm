@@ -5,8 +5,19 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+anyhow = { workspace = true }
 clap = { version = "4.1.6", features = ["derive"] }
 moss-lib = { path = "../moss-lib" }
 moss-rpc = { path = "../moss-lib/rpc" }
+moss-storage = { path = "../moss-lib/storage" }
+once_cell = { workspace = true }
+sea-orm = { version = "0.11.0", features = [
+    "sqlx-mysql",
+    "runtime-tokio-rustls",
+    "with-time"
+] }
+serde = { workspace = true }
+time = { workspace = true }
 tokio = { workspace = true }
+toml = { workspace = true }
 tracing = { workspace = true }

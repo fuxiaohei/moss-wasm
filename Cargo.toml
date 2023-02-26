@@ -14,6 +14,7 @@ members = [
     "moss-lib",
     "moss-lib/rpc",
     "moss-lib/storage",
+    "moss-lib/service",
     "moss-runtime",
     "moss-runtime/host-call",
     "moss-sdk",
@@ -56,6 +57,12 @@ async-trait = "0.1.64"
 hyper = { version = "0.14.24", features = ["full"] }
 serde = { version = "1.0.152", features = ["derive"] }
 toml = "0.7.2"
+once_cell = "1.17.1"
+sea-orm = { version = "0.11.0", features = [
+    "sqlx-mysql",
+    "runtime-tokio-rustls",
+    "with-time"
+] }
 
 [build-dependencies]
 moss-runtime = { path = "moss-runtime" }

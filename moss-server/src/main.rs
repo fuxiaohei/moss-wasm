@@ -1,7 +1,10 @@
 use clap::Parser;
+use moss_storage::db;
 use std::net::SocketAddr;
 use std::path::Path;
-use tracing::error;
+use tracing::{debug, error};
+
+mod config;
 
 #[derive(Parser, Debug)]
 struct CliArgs {
@@ -24,6 +27,15 @@ async fn main() {
         return;
     }
 
+    // read config file
+    let config = config::Config::from_file(&args.config).unwrap();
+    debug!("read config: {config:?}");
+
+    // init database
+    db::init_db(&config.db).await.unwrap();
+
     // start rpc server
-    moss_rpc::rpc_server::start(args.addr).await.unwrap();
+    moss_rpc::rpc_server::start(config.http.addr.parse().unwrap())
+        .await
+        .unwrap();
 }

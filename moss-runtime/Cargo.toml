@@ -10,7 +10,7 @@ async-trait = { workspace = true }
 deadpool = { version = "0.9.5", features = ["rt_tokio_1"] }
 moss-host-call = { path = "./host-call" }
 moss-storage = { path = "../moss-lib/storage" }
-once_cell = "1.17.1"
+once_cell = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 wasi-cap-std-sync = { workspace = true }
