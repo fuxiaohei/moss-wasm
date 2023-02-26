@@ -162,8 +162,13 @@ pub fn compile_js(target: &str, src_js_path: &str, js_engine_path: Option<String
             }
         };
 
+    // create dir
+    let engine_dir = Path::new(&target).parent().unwrap();
+    std::fs::create_dir_all(engine_dir).expect("create dir failed");
+    debug!("Create engine dir: {}", &engine_dir.display());
+
     // prepare js engine
-    let engine_file = Path::new(&target).parent().unwrap().join("js_engine.wasm");
+    let engine_file = engine_dir.join("js_engine.wasm");
     let engine_wasm = if let Some(js_engine) = js_engine_path {
         if !PathBuf::from(&js_engine).exists() {
             bail!("File not found: {}", &js_engine);
