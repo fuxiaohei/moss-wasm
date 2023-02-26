@@ -7,7 +7,7 @@ use std::str::FromStr;
 use std::sync::{Arc, Mutex};
 
 pub trait Handler: Send + Sync + 'static {
-    fn call<'a>(&'a self, req: Request) -> Response;
+    fn call(&self, req: Request) -> Response;
 }
 
 impl Debug for dyn Handler {
@@ -20,7 +20,7 @@ impl<F> Handler for F
 where
     F: Send + Sync + 'static + Fn(Request) -> Response,
 {
-    fn call<'a>(&'a self, req: Request) -> Response {
+    fn call<'a>(&'_ self, req: Request) -> Response {
         (self)(req)
     }
 }
@@ -72,7 +72,8 @@ pub fn any(
     Ok(())
 }
 
-pub fn route(req: Request) -> Response {
+/// route runs handler
+pub fn route(mut req: Request) -> Response {
     // get method and path to match router
     let method = req.method().clone();
     let path = req.uri().clone();
@@ -88,9 +89,26 @@ pub fn route(req: Request) -> Response {
         return error_response(StatusCode::NOT_FOUND, "route mismatch".to_string());
     }
 
+    // prepare params
+    let mut route_params = HashMap::new();
+    matched.as_ref().unwrap().params.iter().for_each(|(k, v)| {
+        route_params.insert(k.to_string(), v.to_string());
+    });
+    req.extensions_mut().insert(route_params);
+
     // call handler
     let handler = matched.unwrap().value;
     handler.call(req)
+}
+
+/// params get value from request
+pub fn params(req: &Request, key: String) -> Option<String> {
+    let ext = req.extensions();
+    // find params map
+    let params = ext.get::<HashMap<String, String>>()?;
+    // get value
+    let value = params.get(&key)?;
+    Some(value.to_string())
 }
 
 #[cfg(test)]
@@ -164,8 +182,25 @@ mod tests {
             let router = router.entry(Method::GET).or_default();
             let matched = router.at("/xyz/abc");
             assert!(matched.is_ok());
-            let path_str = matched.unwrap().params.get("path").unwrap();
+
+            let mut route_params = HashMap::new();
+            matched.as_ref().unwrap().params.iter().for_each(|(k, v)| {
+                route_params.insert(k.to_string(), v.to_string());
+            });
+
+            let path_str = matched.as_ref().unwrap().params.get("path").unwrap();
             assert_eq!(path_str, "abc");
+
+            let handler = matched.unwrap();
+            let mut req = http::Request::builder().method(Method::GET).uri("/xyz/abc");
+            req.extensions_mut().unwrap().insert(route_params);
+            let req = req.body(bytes::Bytes::from("")).unwrap();
+
+            let p = params(&req, "path".to_string());
+            assert_eq!(p, Some("abc".to_string()));
+
+            let resp = handler.value.call(req);
+            assert_eq!(resp.status(), 200);
         }
         Ok(())
     }
