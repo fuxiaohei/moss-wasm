@@ -1,5 +1,4 @@
 use clap::Parser;
-use moss_storage::db;
 use std::path::Path;
 use tracing::{debug, error};
 
@@ -29,7 +28,7 @@ async fn main() {
     debug!("read config: {config:?}");
 
     // init database
-    db::init_db(&config.db).await.unwrap();
+    moss_db_service::init_db(&config.db).await.unwrap();
 
     // start rpc server
     moss_rpc::rpc_server::start(config.http.addr.parse().unwrap())

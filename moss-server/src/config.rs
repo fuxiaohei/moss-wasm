@@ -1,5 +1,5 @@
 use anyhow::Result;
-use moss_storage::db::config::Config as DBConfig;
+use moss_db_service::Config as DBConfig;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -1,10 +1,13 @@
 [package]
-name = "moss-service"
+name = "moss-db-service"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
 thiserror = "1.0.38"
-moss-storage = { path = "../storage" }
 sea-orm = { workspace = true }
+anyhow = { workspace = true }
+once_cell = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }

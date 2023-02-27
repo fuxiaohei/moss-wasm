@@ -1,5 +1,5 @@
 [package]
-name = "moss-storage"
+name = "moss-kv-service"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
@@ -7,9 +7,6 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 async-trait = { workspace = true }
-once_cell = { workspace = true }
-sea-orm = { workspace = true }
-serde = { workspace = true }
 tracing = { workspace = true }
 
 [dev-dependencies]

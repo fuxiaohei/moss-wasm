@@ -1,12 +1,13 @@
 use crate::entity::prelude::UserToken;
 use crate::entity::user_token;
-use moss_storage::db;
+use crate::DB;
 use sea_orm::ColumnTrait;
 use sea_orm::EntityTrait;
 use sea_orm::QueryFilter;
 
-pub async fn get_user_token(token: String) -> Result<user_token::Model, crate::Error> {
-    let db = db::DB.get().unwrap();
+/// find_by_token finds a user token by token
+pub async fn find_by_token(token: String) -> Result<user_token::Model, crate::Error> {
+    let db = DB.get().unwrap();
     let user_token = UserToken::find()
         .filter(user_token::Column::AccessToken.contains(&token))
         .filter(user_token::Column::Status.contains("active"))

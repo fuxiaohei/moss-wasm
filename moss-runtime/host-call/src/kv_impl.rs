@@ -5,7 +5,7 @@ wasmtime::component::bindgen!({
 });
 
 use kv_storage::{Key, KvError, Pair, Value};
-use moss_storage::kv;
+use moss_kv_service as kv;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
@@ -124,5 +124,4 @@ mod tests {
         let values = kv_storage.get_all().await.unwrap().unwrap();
         assert_eq!(values.len(), 0);
     }
-
 }

@@ -24,7 +24,7 @@ impl MossRpcService for MossRpcImpl {
         request: Request<TokenRequest>,
     ) -> Result<Response<TokenResponse>, Status> {
         let token_str = request.into_inner().token;
-        match moss_service::get_user_token(token_str).await {
+        match moss_db_service::user_token::find_by_token(token_str).await {
             Ok(token) => {
                 let resp = TokenResponse {
                     access_token: token.access_token,
