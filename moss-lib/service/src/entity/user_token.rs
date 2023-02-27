@@ -14,6 +14,7 @@ pub struct Model {
     pub status: String,
     pub created_at: DateTimeUtc,
     pub updated_at: DateTimeUtc,
+    pub expired_at: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -25,6 +25,8 @@ pub fn build(output: &str, metadata: &str) -> Result<String> {
 }
 
 pub async fn deploy(_bundle: &str) -> Result<()> {
-    moss_rpc::rpc_client::upload_bundle().await.unwrap();
+    moss_rpc::rpc_client::upload_bundle("http://127.0.0.1:8679")
+        .await
+        .unwrap();
     Ok(())
 }

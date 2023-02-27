@@ -1,6 +1,5 @@
 use clap::Parser;
 use moss_storage::db;
-use std::net::SocketAddr;
 use std::path::Path;
 use tracing::{debug, error};
 
@@ -10,8 +9,6 @@ mod config;
 struct CliArgs {
     #[clap(long, default_value("moss-server.toml"))]
     pub config: String,
-    #[clap(long, default_value("127.0.0.1:8679"))]
-    pub addr: SocketAddr,
 }
 
 #[tokio::main]

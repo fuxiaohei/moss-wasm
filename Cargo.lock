@@ -1761,6 +1761,7 @@ name = "moss-lib"
 version = "0.1.5"
 dependencies = [
  "anyhow",
+ "bincode",
  "lazy_static",
  "serde",
  "time",

@@ -10,9 +10,8 @@ pub struct MossRpcImpl {}
 impl MossRpcService for MossRpcImpl {
     async fn upload_bundle(
         &self,
-        request: Request<BundleUploadRequest>,
+        _request: Request<BundleUploadRequest>,
     ) -> Result<Response<BundleUploadResponse>, Status> {
-        println!("Got a request from {:?}", request.remote_addr());
         let resp = BundleUploadResponse {
             status_code: 1,
             message: "response ok".to_string(),
@@ -24,14 +23,13 @@ impl MossRpcService for MossRpcImpl {
         &self,
         request: Request<TokenRequest>,
     ) -> Result<Response<TokenResponse>, Status> {
-        println!("Got a request from {:?}", request.remote_addr());
         let token_str = request.into_inner().token;
         match moss_service::get_user_token(token_str).await {
             Ok(token) => {
                 let resp = TokenResponse {
                     access_token: token.access_token,
                     secret_token: token.secret_token,
-                    expiration: 3600,
+                    expiration: token.expired_at,
                 };
                 Ok(Response::new(resp))
             }
@@ -40,14 +38,35 @@ impl MossRpcService for MossRpcImpl {
     }
 }
 
+/// AUTH_STATIC_TOKEN is a static token for authorization
+const AUTH_STATIC_TOKEN: &str = "e20a0453781758a542116380672548449e3a34ef";
+
 /// auth_middleware is middleware to check authorization
 fn auth_middleware(req: Request<()>) -> Result<Request<()>, Status> {
-    let token: MetadataValue<_> = "Bearer some-secret-token".parse().unwrap();
+    let real_token = match req.metadata().get("authorization") {
+        Some(t) => t,
+        _ => return Err(Status::unauthenticated("Invalid auth token")),
+    };
 
-    match req.metadata().get("authorization") {
-        Some(t) if token == t => Ok(req),
-        _ => Err(Status::unauthenticated("Invalid auth token")),
+    let auth_method = req.metadata().get("x-auth-method");
+    // check auth_method if exist, use inner auth token
+    if auth_method.is_some() {
+        let auth_method = auth_method.unwrap().to_str().unwrap();
+        if auth_method == "moss_cli_auth_token" {
+            return Ok(req);
+        }
+        let static_token: MetadataValue<_> =
+            format!("Bearer {}", AUTH_STATIC_TOKEN).parse().unwrap();
+        if real_token == static_token {
+            return Ok(req);
+        }
     }
+
+    let token: MetadataValue<_> = "Bearer some-secret-token".parse().unwrap();
+    if real_token == token {
+        return Ok(req);
+    }
+    Err(Status::unauthenticated("Invalid auth token"))
 }
 
 /// start startes rpc server

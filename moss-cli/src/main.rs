@@ -21,6 +21,8 @@ enum MossCli {
     Serve(flags::Serve),
     /// Deploy this project to the cloud
     Deploy(flags::Deploy),
+    /// Auth login to the cloud
+    Auth(flags::Auth),
 }
 
 #[tokio::main]
@@ -33,5 +35,6 @@ async fn main() {
         MossCli::Build(cmd) => cmd.run().await,
         MossCli::Serve(cmd) => cmd.run().await,
         MossCli::Deploy(cmd) => cmd.run().await,
+        MossCli::Auth(cmd) => cmd.run().await,
     }
 }

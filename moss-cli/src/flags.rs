@@ -1,10 +1,12 @@
 use crate::{bundle, embed};
 use clap::Args;
 use moss_lib::metadata::{Metadata, DEFAULT_METADATA_FILE};
+use moss_rpc::rpc_client;
 use moss_runtime::compiler;
 use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
-use tracing::{debug, debug_span, info, Instrument};
+use std::time::SystemTime;
+use tracing::{debug, debug_span, error, info, Instrument};
 
 #[derive(Args, Debug)]
 pub struct Init {
@@ -198,5 +200,59 @@ impl Deploy {
 
         // upload bundle
         bundle::deploy(&bundle_file).await.unwrap();
+    }
+}
+
+#[derive(Args, Debug)]
+pub struct Auth {
+    /// The user token
+    pub user_token: String,
+    /// Cloud api address
+    #[clap(long, default_value("http://127.0.0.1:8679"))]
+    pub cloud_api: Option<String>,
+}
+
+impl Auth {
+    pub async fn run(&self) {
+        debug!("Auth: {self:?}");
+
+        let cloud_api = self.cloud_api.as_ref().unwrap().clone();
+        info!("Connect to {}", cloud_api);
+
+        let client = rpc_client::Client::new(cloud_api.clone());
+        let response = match client.auth_token(self.user_token.clone()).await {
+            Ok(response) => response,
+            Err(e) => {
+                error!("Auth failed: {}", e);
+                return;
+            }
+        };
+        // if expiration > 0, need to check expiration
+        let now = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        if response.expiration > 0 {
+            if now > response.expiration.try_into().unwrap() {
+                error!("Auth failed: token expired");
+                return;
+            }
+        }
+
+        // get env file
+        let env_file = moss_lib::metadata::get_metadata_env_file();
+        debug!("Env file: {:?}", env_file);
+
+        // write env file
+        let env_data = moss_lib::metadata::MetadataEnv {
+            api_host: cloud_api,
+            api_key: self.user_token.clone(),
+            api_secret: response.secret_token,
+            api_secret_expires: response.expiration.try_into().unwrap(),
+            created_at: now,
+        };
+        env_data.to_file(&env_file).unwrap();
+
+        info!("Auth success!");
     }
 }
