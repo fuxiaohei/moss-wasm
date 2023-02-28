@@ -22,7 +22,7 @@ impl GuestGeneratorType {
     fn create_generator(&self) -> Result<Box<dyn WorldGenerator>> {
         match self {
             GuestGeneratorType::Rust => {
-                let opts = wit_bindgen_gen_guest_rust::Opts {
+                let opts = wit_bindgen_rust::Opts {
                     macro_export: true,
                     rustfmt: true,
                     ..Default::default()

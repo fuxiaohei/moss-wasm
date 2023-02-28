@@ -18,7 +18,7 @@ wasi-host = { workspace = true }
 wasmtime = { workspace = true }
 which = "4.4.0"
 wit-bindgen-core = { workspace = true }
-wit-bindgen-gen-guest-rust = { workspace = true }
+wit-bindgen-rust = { workspace = true }
 wit-component = { workspace = true }
 wit-parser = { workspace = true }
 
