@@ -19,7 +19,7 @@ impl MossRpcService for MossRpcImpl {
         Ok(Response::new(resp))
     }
 
-    async fn get_token(
+    async fn verify_token(
         &self,
         request: Request<TokenRequest>,
     ) -> Result<Response<TokenResponse>, Status> {

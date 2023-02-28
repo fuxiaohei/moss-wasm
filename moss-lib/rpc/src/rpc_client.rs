@@ -35,7 +35,7 @@ impl Client {
                 Ok(req)
             });
         let request = Request::new(TokenRequest { token: user_token });
-        let response = client.get_token(request).await?;
+        let response = client.verify_token(request).await?;
         debug!("response: {:?}", response);
         Ok(response.into_inner())
     }
