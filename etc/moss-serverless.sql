@@ -1,26 +1,82 @@
-# ************************************************************
-# Sequel Ace SQL dump
-# 版本号： 20046
-#
-# https://sequel-ace.com/
-# https://github.com/Sequel-Ace/Sequel-Ace
-#
-# 主机: 127.0.0.1 (MySQL 5.7.39)
-# 数据库: moss-serverless
-# 生成时间: 2023-02-26 14:43:39 +0000
-# ************************************************************
-
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 SET NAMES utf8mb4;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE='NO_AUTO_VALUE_ON_ZERO', SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
-# 转储表 user_info
+# Dump of table function_conf
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `function_conf`;
+
+CREATE TABLE `function_conf` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `function_id` int(11) NOT NULL,
+  `name` varchar(128) NOT NULL DEFAULT '',
+  `value` varchar(512) NOT NULL DEFAULT '',
+  `conf_type` varchar(16) NOT NULL DEFAULT '',
+  `status` varchar(16) NOT NULL DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `function_id` (`function_id`),
+  KEY `conf_type` (`conf_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table function_info
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `function_info`;
+
+CREATE TABLE `function_info` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(32) NOT NULL DEFAULT '',
+  `name` varchar(32) NOT NULL DEFAULT '',
+  `resource` int(11) NOT NULL,
+  `function_type` varchar(16) NOT NULL DEFAULT '',
+  `storage_path` varchar(128) NOT NULL DEFAULT '',
+  `storage_size` int(11) NOT NULL,
+  `storage_md5` varchar(40) NOT NULL DEFAULT '',
+  `status` varchar(16) NOT NULL DEFAULT '',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table function_resource
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `function_resource`;
+
+CREATE TABLE `function_resource` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL DEFAULT '',
+  `cpu_time` int(11) NOT NULL DEFAULT '1000',
+  `memory_usage` int(11) NOT NULL DEFAULT '128',
+  `wall_time` int(11) NOT NULL DEFAULT '30000',
+  `fetch_counts` int(11) NOT NULL DEFAULT '5',
+  `fetch_remote_list` varchar(256) NOT NULL DEFAULT '*',
+  `status` varchar(12) NOT NULL DEFAULT 'active',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+# Dump of table user_info
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `user_info`;
@@ -44,7 +100,7 @@ CREATE TABLE `user_info` (
 
 
 
-# 转储表 user_token
+# Dump of table user_token
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS `user_token`;
@@ -58,6 +114,7 @@ CREATE TABLE `user_token` (
   `status` varchar(12) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `expired_at` int(12) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user-id` (`user_id`),
   KEY `token-from` (`access_token`,`from`),
