@@ -1,18 +1,50 @@
+use crate::auth::{AuthDynamicTokenInterceptor, AuthStaticTokenInterceptor};
 use crate::moss_rpc::moss_rpc_service_client::MossRpcServiceClient;
 use crate::moss_rpc::{BundleUploadRequest, TokenRequest, TokenResponse};
-use tonic::{metadata::MetadataValue, transport::Channel, Request};
+use tonic::{codegen::InterceptedService, transport::Channel, Request};
 use tracing::{debug, instrument};
-
-/// AUTH_STATIC_TOKEN is a static token for authorization
-const AUTH_STATIC_TOKEN: &str = "e20a0453781758a542116380672548449e3a34ef";
 
 pub struct Client {
     addr: String,
+    access_token: String,
+    secret_token: String,
 }
 
 impl Client {
-    pub fn new(addr: String) -> Self {
-        Self { addr }
+    pub fn new(addr: String, access_token: String, secret_token: String) -> Self {
+        Self {
+            addr,
+            access_token,
+            secret_token,
+        }
+    }
+
+    async fn create_static_client(
+        self,
+    ) -> Result<
+        MossRpcServiceClient<InterceptedService<Channel, AuthStaticTokenInterceptor>>,
+        Box<dyn std::error::Error>,
+    > {
+        let channel = Channel::from_shared(self.addr)?.connect().await?;
+        let client = MossRpcServiceClient::with_interceptor(channel, AuthStaticTokenInterceptor {});
+        Ok(client)
+    }
+
+    async fn create_token_client(
+        self,
+    ) -> Result<
+        MossRpcServiceClient<InterceptedService<Channel, AuthDynamicTokenInterceptor>>,
+        Box<dyn std::error::Error>,
+    > {
+        let channel = Channel::from_shared(self.addr)?.connect().await?;
+        let client = MossRpcServiceClient::with_interceptor(
+            channel,
+            AuthDynamicTokenInterceptor {
+                access_token: self.access_token.clone(),
+                secret_token: self.secret_token.clone(),
+            },
+        );
+        Ok(client)
     }
 
     #[instrument(
@@ -25,40 +57,21 @@ impl Client {
         self,
         user_token: String,
     ) -> Result<TokenResponse, Box<dyn std::error::Error>> {
-        let channel = Channel::from_shared(self.addr)?.connect().await?;
-        let token: MetadataValue<_> = format!("Bearer {}", AUTH_STATIC_TOKEN).parse()?;
-        let mut client =
-            MossRpcServiceClient::with_interceptor(channel, move |mut req: Request<()>| {
-                req.metadata_mut().insert("authorization", token.clone());
-                req.metadata_mut()
-                    .insert("x-auth-method", MetadataValue::from_static("moss_cli_auth_token"));
-                Ok(req)
-            });
+        let mut client = self.create_static_client().await?;
         let request = Request::new(TokenRequest { token: user_token });
         let response = client.verify_token(request).await?;
-        debug!("response: {:?}", response);
+        debug!("[auth_token] response={:?}", response);
         Ok(response.into_inner())
     }
-}
 
-pub async fn upload_bundle(addr: &'static str) -> Result<(), Box<dyn std::error::Error>> {
-    let channel = Channel::from_static(addr).connect().await?;
-    let token: MetadataValue<_> = "Bearer some-secret-token".parse()?;
-    let mut client = MossRpcServiceClient::with_interceptor(channel, move |mut req: Request<()>| {
-        req.metadata_mut().insert("authorization", token.clone());
-        Ok(req)
-    });
-
-    let request = Request::new(BundleUploadRequest {
-        bundle_name: "bundle_name".to_string(),
-        bundle_size: 100,
-        bundle_md5: "bundle_md5".to_string(),
-        content: vec![1, 2, 3, 4],
-    });
-
-    let response = client.upload_bundle(request).await?;
-
-    println!("RESPONSE={:?}", response);
-
-    Ok(())
+    pub async fn upload_function(
+        self,
+        bundle_req: BundleUploadRequest,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let mut client = self.create_token_client().await?;
+        let request = Request::new(bundle_req);
+        let response = client.upload_bundle(request).await?;
+        debug!("[upload_function] response={response:?}");
+        Ok(())
+    }
 }

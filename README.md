@@ -6,5 +6,5 @@ wasm serverless platform
 
 ```bash
 cargo install sea-orm-cli
-sea-orm-cli generate entity -u=mysql://root:@localhost/moss-serverless -o moss-lib/service/src/entity
+sea-orm-cli generate entity -u=mysql://root:@localhost/moss-serverless -o moss-lib/db-service/src/entity
 ```

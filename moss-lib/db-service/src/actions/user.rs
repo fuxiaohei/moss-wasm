@@ -1,3 +1,5 @@
+use std::time;
+
 use crate::entity::prelude::UserToken;
 use crate::entity::user_token;
 use crate::DB;
@@ -19,4 +21,13 @@ pub async fn find_by_token(token: String) -> Result<user_token::Model, crate::Er
         return Err(crate::Error::RecordNotFound);
     }
     Ok(user_token.unwrap())
+}
+
+/// is_token_expired checks if a token is expired
+pub fn is_token_expired(token: &user_token::Model) -> bool {
+    let now_unixstamp = time::SystemTime::now()
+        .duration_since(time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+    token.expired_at < now_unixstamp as i32
 }

@@ -100,6 +100,14 @@ impl Metadata {
         self.get_target().replace(".wasm", ".component.wasm")
     }
 
+    /// get src directory name
+    pub fn get_src_dir(&self) -> String {
+        if self.language == "js" {
+            return "dist/".to_string();
+        }
+        "src/".to_string()
+    }
+
     /// get route base
     pub fn get_route_base(&self) -> String {
         self.deploy

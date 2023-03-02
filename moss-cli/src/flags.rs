@@ -184,6 +184,17 @@ impl Deploy {
     pub async fn run(&self) {
         debug!("Deploy: {self:?}");
 
+        let env_file = moss_lib::metadata::get_metadata_env_file();
+        debug!("Env file: {:?}", env_file);
+        let env = match moss_lib::metadata::MetadataEnv::from_file(&env_file) {
+            Ok(env) => env,
+            Err(e) => {
+                debug!("Load env file failed: {:?}", e);
+                panic!("You are not logged\n\t run 'moss-cli auth <your_token>'")
+            }
+        };
+        debug!("Env: {:?}", env);
+
         let meta =
             Metadata::from_file(DEFAULT_METADATA_FILE).expect("Project metadata.toml not found");
         debug!("Metadata: {meta:?}");
@@ -196,10 +207,11 @@ impl Deploy {
         info!("Find component: {}", &output);
 
         // generate an bundled file
-        let bundle_file = bundle::build(&output, DEFAULT_METADATA_FILE).unwrap();
+        let bundle_object =
+            bundle::build(&output, DEFAULT_METADATA_FILE, &meta.get_src_dir()).unwrap();
 
         // upload bundle
-        bundle::deploy(&bundle_file).await.unwrap();
+        bundle::deploy(&env, &bundle_object).await.unwrap();
     }
 }
 
@@ -219,7 +231,7 @@ impl Auth {
         let cloud_api = self.cloud_api.as_ref().unwrap().clone();
         info!("Connect to {}", cloud_api);
 
-        let client = rpc_client::Client::new(cloud_api.clone());
+        let client = rpc_client::Client::new(cloud_api.clone(), String::from(""), String::from(""));
         let response = match client.auth_token(self.user_token.clone()).await {
             Ok(response) => response,
             Err(e) => {
@@ -232,11 +244,9 @@ impl Auth {
             .duration_since(SystemTime::UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        if response.expiration > 0 {
-            if now > response.expiration.try_into().unwrap() {
-                error!("Auth failed: token expired");
-                return;
-            }
+        if response.expiration > 0 && now > response.expiration.try_into().unwrap() {
+            error!("Auth failed: token expired");
+            return;
         }
 
         // get env file

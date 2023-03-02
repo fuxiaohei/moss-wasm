@@ -9,7 +9,7 @@ pub enum Error {
 }
 
 mod actions;
-pub use actions::user_token;
+pub use actions::user;
 
 mod config;
 pub use config::Config;

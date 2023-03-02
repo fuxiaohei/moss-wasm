@@ -15,6 +15,7 @@ log = { version = "0.4.17", features = [
     "release_max_level_error"
 ] }
 matchit = "0.7.0"
+md-5 = "0.10.5"
 moss-host-call = { path = "../moss-runtime/host-call" }
 moss-lib = { path = "../moss-lib" }
 moss-rpc = { path = "../moss-lib/rpc" }
@@ -23,4 +24,5 @@ routefinder = "0.5.2"
 rust-embed = "6.4.2"
 tokio = { workspace = true }
 tracing = { workspace = true }
+walkdir = "2.3.2"
 zip = "0.6.4"

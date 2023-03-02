@@ -89,7 +89,7 @@ impl Service<Request<Body>> for HttpRequestContext {
         // do route match
         let uri = req.uri().clone();
         let path = uri.path();
-        let matched = self.router.at(&path);
+        let matched = self.router.at(path);
         if matched.is_err() {
             return Box::pin(async move {
                 Ok(create_error_response(

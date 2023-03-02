@@ -1677,6 +1677,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4facc753ae494aeb6e3c22f839b158aebd4f9270f55cd3c79906c45476c47ab4"
 
 [[package]]
+name = "md-5"
+version = "0.10.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6365506850d44bff6e2fbcb5176cf63650e48bd45ef2fe2665ae1570e0f4b9ca"
+dependencies = [
+ "digest",
+]
+
+[[package]]
 name = "memchr"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1744,7 +1753,7 @@ dependencies = [
 
 [[package]]
 name = "moss-cli"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "bytes",
@@ -1753,6 +1762,7 @@ dependencies = [
  "hyper",
  "log",
  "matchit",
+ "md-5",
  "moss-host-call",
  "moss-lib",
  "moss-rpc",
@@ -1761,12 +1771,13 @@ dependencies = [
  "rust-embed",
  "tokio",
  "tracing",
+ "walkdir",
  "zip",
 ]
 
 [[package]]
 name = "moss-db-service"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "once_cell",
@@ -1778,7 +1789,7 @@ dependencies = [
 
 [[package]]
 name = "moss-host-call"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1791,7 +1802,7 @@ dependencies = [
 
 [[package]]
 name = "moss-kv-service"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1801,7 +1812,7 @@ dependencies = [
 
 [[package]]
 name = "moss-lib"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "bincode",
@@ -1816,7 +1827,7 @@ dependencies = [
 
 [[package]]
 name = "moss-rpc"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "moss-db-service",
  "prost",
@@ -1828,7 +1839,7 @@ dependencies = [
 
 [[package]]
 name = "moss-runtime"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1850,7 +1861,7 @@ dependencies = [
 
 [[package]]
 name = "moss-sdk"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "bytes",
@@ -1863,7 +1874,7 @@ dependencies = [
 
 [[package]]
 name = "moss-sdk-macro"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "bytes",
@@ -1874,7 +1885,7 @@ dependencies = [
 
 [[package]]
 name = "moss-server"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "clap",
@@ -1892,7 +1903,7 @@ dependencies = [
 
 [[package]]
 name = "moss-wasm"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "clap",
  "moss-host-call",
