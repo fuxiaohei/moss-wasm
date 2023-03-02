@@ -29,5 +29,5 @@ pub fn is_token_expired(token: &user_token::Model) -> bool {
         .duration_since(time::UNIX_EPOCH)
         .unwrap()
         .as_secs();
-    token.expired_at < now_unixstamp as i32
+    token.expired_at > 0 && token.expired_at < now_unixstamp as i32
 }

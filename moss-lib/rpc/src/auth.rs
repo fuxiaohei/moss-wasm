@@ -84,7 +84,7 @@ pub async fn verify_auth_token<T>(req: Request<T>) -> Result<Request<T>, Status>
         if token_data.status != "active" {
             return Err(Status::unauthenticated("Access token is inactive"));
         }
-        if !moss_db_service::user::is_token_expired(&token_data) {
+        if moss_db_service::user::is_token_expired(&token_data) {
             return Err(Status::unauthenticated("Access token is expired"));
         }
 
