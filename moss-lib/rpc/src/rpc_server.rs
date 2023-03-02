@@ -1,5 +1,6 @@
 use crate::moss_rpc::moss_rpc_service_server::{MossRpcService, MossRpcServiceServer};
 use crate::moss_rpc::{BundleUploadRequest, BundleUploadResponse, TokenRequest, TokenResponse};
+use moss_db_service::entity::function_info::Model as FunctionInfoModel;
 use std::net::SocketAddr;
 use tonic::{transport::Server, Request, Response, Status};
 use tracing::info;
@@ -13,7 +14,27 @@ impl MossRpcService for MossRpcImpl {
         &self,
         req: Request<BundleUploadRequest>,
     ) -> Result<Response<BundleUploadResponse>, Status> {
-        crate::auth::verify_auth_token(req).await?;
+        let token_model = crate::auth::verify_rpc_call_token(&req).await?;
+        let req = req.into_inner();
+        let now = chrono::Utc::now();
+        let function_info = FunctionInfoModel {
+            id: 0,
+            user_id: token_model.user_id as i32,
+            name: req.bundle_name,
+            uuid: "uuid".to_string(),
+            resource: 1,
+            status: "active".to_string(),
+            function_type: "rust".to_string(),
+            storage_path: "/tmp".to_string(),
+            storage_size: req.bundle_size as i32,
+            storage_md5: req.bundle_md5,
+            created_at: now,
+            deleted_at: now,
+        };
+        let model = moss_db_service::function::upsert_info(function_info)
+            .await
+            .map_err(|e| Status::internal(e.to_string()))?;
+        info!("function info: {:?}", model);
 
         let resp = BundleUploadResponse {
             status_code: 1,
@@ -26,6 +47,8 @@ impl MossRpcService for MossRpcImpl {
         &self,
         request: Request<TokenRequest>,
     ) -> Result<Response<TokenResponse>, Status> {
+        crate::auth::verify_auth_token(&request).await?;
+
         let token_str = request.into_inner().token;
         match moss_db_service::user::find_by_token(token_str).await {
             Ok(token) => {

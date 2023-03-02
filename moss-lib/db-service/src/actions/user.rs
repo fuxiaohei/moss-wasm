@@ -1,11 +1,10 @@
-use std::time;
-
 use crate::entity::prelude::UserToken;
 use crate::entity::user_token;
 use crate::DB;
 use sea_orm::ColumnTrait;
 use sea_orm::EntityTrait;
 use sea_orm::QueryFilter;
+use std::time;
 
 /// find_by_token finds a user token by token
 pub async fn find_by_token(token: String) -> Result<user_token::Model, crate::Error> {

@@ -64,6 +64,12 @@ impl Client {
         Ok(response.into_inner())
     }
 
+    #[instrument(
+        skip_all,
+        name = "[Rpc]",
+        level = "debug",
+        fields(method = "upload_function")
+    )]
     pub async fn upload_function(
         self,
         bundle_req: BundleUploadRequest,
@@ -71,7 +77,7 @@ impl Client {
         let mut client = self.create_token_client().await?;
         let request = Request::new(bundle_req);
         let response = client.upload_bundle(request).await?;
-        debug!("[upload_function] response={response:?}");
+        debug!("response={response:?}");
         Ok(())
     }
 }

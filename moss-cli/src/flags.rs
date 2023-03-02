@@ -190,7 +190,8 @@ impl Deploy {
             Ok(env) => env,
             Err(e) => {
                 debug!("Load env file failed: {:?}", e);
-                panic!("You are not logged\n\t run 'moss-cli auth <your_token>'")
+                error!("You are not logged. Run 'moss-cli auth <your_token>'");
+                std::process::exit(1);
             }
         };
         debug!("Env: {:?}", env);

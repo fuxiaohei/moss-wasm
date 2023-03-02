@@ -5,6 +5,7 @@ edition = { workspace = true }
 authors = { workspace = true }
 
 [dependencies]
+chrono = "0.4.23"
 moss-db-service = { path = "../db-service" }
 prost = "0.11.6"
 tokio = { workspace = true }
