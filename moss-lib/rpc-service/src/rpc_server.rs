@@ -31,7 +31,7 @@ impl MossRpcService for MossRpcImpl {
             created_at: now,
             deleted_at: now,
         };
-        let model = moss_core_service::function::save(function_info)
+        let model = moss_core_service::function::save(function_info, req.content)
             .await
             .map_err(|e| Status::internal(e.to_string()))?;
         info!("function info: {:?}", model);

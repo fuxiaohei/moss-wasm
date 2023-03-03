@@ -1882,6 +1882,7 @@ name = "moss-core-service"
 version = "0.1.6"
 dependencies = [
  "anyhow",
+ "bytes",
  "once_cell",
  "opendal",
  "sea-orm",

@@ -34,4 +34,8 @@ pub enum Error {
     /// UserInActive
     #[error("User inactive")]
     UserInactive,
+
+    /// StoreWriteError
+    #[error("Store write error")]
+    StoreWriteError(#[from] opendal::Error),
 }

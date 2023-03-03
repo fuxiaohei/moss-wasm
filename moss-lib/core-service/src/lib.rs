@@ -12,3 +12,4 @@ mod errors;
 mod store;
 pub use store::config::Config as StoreConfig;
 pub use store::init_store;
+pub use store::STORE;

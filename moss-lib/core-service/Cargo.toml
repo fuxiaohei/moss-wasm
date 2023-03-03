@@ -6,6 +6,7 @@ authors = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
+bytes = { workspace = true }
 once_cell = { workspace = true }
 opendal = "0.29.0"
 sea-orm = { workspace = true }
