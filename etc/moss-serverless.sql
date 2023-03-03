@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS `function_conf`;
 
 CREATE TABLE `function_conf` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `function_id` int(11) NOT NULL,
+  `function_id` int(11) unsigned NOT NULL,
   `name` varchar(128) NOT NULL DEFAULT '',
   `value` varchar(512) NOT NULL DEFAULT '',
   `conf_type` varchar(16) NOT NULL DEFAULT '',
@@ -24,7 +24,8 @@ CREATE TABLE `function_conf` (
   `deleted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `function_id` (`function_id`),
-  KEY `conf_type` (`conf_type`)
+  KEY `conf_type` (`conf_type`),
+  CONSTRAINT `fn_info_id` FOREIGN KEY (`id`) REFERENCES `function_info` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -36,9 +37,10 @@ DROP TABLE IF EXISTS `function_info`;
 
 CREATE TABLE `function_info` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(32) NOT NULL DEFAULT '',
+  `user_id` int(11) unsigned NOT NULL,
+  `uuid` varchar(64) NOT NULL DEFAULT '',
   `name` varchar(32) NOT NULL DEFAULT '',
-  `resource` int(11) NOT NULL,
+  `resource` int(11) unsigned NOT NULL,
   `function_type` varchar(16) NOT NULL DEFAULT '',
   `storage_path` varchar(128) NOT NULL DEFAULT '',
   `storage_size` int(11) NOT NULL,
@@ -48,7 +50,11 @@ CREATE TABLE `function_info` (
   `deleted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `fn_info_resource` (`resource`),
+  KEY `fn_info_user` (`user_id`),
+  CONSTRAINT `fn_info_resource` FOREIGN KEY (`resource`) REFERENCES `function_resource` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fn_info_user` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -118,7 +124,8 @@ CREATE TABLE `user_token` (
   PRIMARY KEY (`id`),
   KEY `user-id` (`user_id`),
   KEY `token-from` (`access_token`,`from`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  CONSTRAINT `user_token_user_info` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
