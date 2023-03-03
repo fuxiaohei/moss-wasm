@@ -10,9 +10,8 @@ pub enum Error {
     RecordExists(String, String),
 }
 
-mod actions;
-pub use actions::user;
-pub use actions::function;
+pub mod function;
+pub mod user;
 
 mod config;
 pub use config::Config;

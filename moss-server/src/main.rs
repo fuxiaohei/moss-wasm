@@ -31,7 +31,7 @@ async fn main() {
     moss_db_service::init_db(&config.db).await.unwrap();
 
     // start rpc server
-    moss_rpc::rpc_server::start(config.http.addr.parse().unwrap())
+    moss_rpc_service::start(config.http.addr.parse().unwrap())
         .await
         .unwrap();
 }

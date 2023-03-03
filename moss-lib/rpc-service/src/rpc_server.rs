@@ -1,5 +1,5 @@
-use crate::moss_rpc::moss_rpc_service_server::{MossRpcService, MossRpcServiceServer};
-use crate::moss_rpc::{BundleUploadRequest, BundleUploadResponse, TokenRequest, TokenResponse};
+use crate::moss_rpc_service_server::{MossRpcService, MossRpcServiceServer};
+use crate::{BundleUploadRequest, BundleUploadResponse, TokenRequest, TokenResponse};
 use moss_db_service::entity::function_info::Model as FunctionInfoModel;
 use std::net::SocketAddr;
 use tonic::{transport::Server, Request, Response, Status};

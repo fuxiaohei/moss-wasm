@@ -14,7 +14,7 @@ members = [
     "moss-lib",
     "moss-lib/db-service",
     "moss-lib/kv-service",
-    "moss-lib/rpc",
+    "moss-lib/rpc-service",
     "moss-runtime",
     "moss-runtime/host-call",
     "moss-sdk",

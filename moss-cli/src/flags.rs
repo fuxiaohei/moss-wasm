@@ -1,7 +1,6 @@
 use crate::{bundle, embed};
 use clap::Args;
 use moss_lib::metadata::{Metadata, DEFAULT_METADATA_FILE};
-use moss_rpc::rpc_client;
 use moss_runtime::compiler;
 use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
@@ -232,7 +231,8 @@ impl Auth {
         let cloud_api = self.cloud_api.as_ref().unwrap().clone();
         info!("Connect to {}", cloud_api);
 
-        let client = rpc_client::Client::new(cloud_api.clone(), String::from(""), String::from(""));
+        let client =
+            moss_rpc_service::Client::new(cloud_api.clone(), String::from(""), String::from(""));
         let response = match client.auth_token(self.user_token.clone()).await {
             Ok(response) => response,
             Err(e) => {

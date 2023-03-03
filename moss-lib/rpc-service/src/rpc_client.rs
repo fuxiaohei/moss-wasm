@@ -1,6 +1,6 @@
 use crate::auth::{AuthDynamicTokenInterceptor, AuthStaticTokenInterceptor};
-use crate::moss_rpc::moss_rpc_service_client::MossRpcServiceClient;
-use crate::moss_rpc::{BundleUploadRequest, TokenRequest, TokenResponse};
+use crate::moss_rpc_service_client::MossRpcServiceClient;
+use crate::{BundleUploadRequest, TokenRequest, TokenResponse};
 use tonic::{codegen::InterceptedService, transport::Channel, Request};
 use tracing::{debug, instrument};
 

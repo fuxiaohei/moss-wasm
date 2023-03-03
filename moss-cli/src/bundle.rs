@@ -1,8 +1,7 @@
 use anyhow::Result;
 use md5::{Digest, Md5};
 use moss_lib::metadata::{MetadataEnv, DEFAULT_METADATA_FILE};
-use moss_rpc::moss_rpc::BundleUploadRequest;
-use moss_rpc::rpc_client;
+use moss_rpc_service::BundleUploadRequest;
 use std::io::Write;
 use std::path::Path;
 use tracing::{debug, error, info};
@@ -72,7 +71,7 @@ pub fn build(output: &str, metadata: &str, src_dir: &str) -> Result<Bundle> {
 
 pub async fn deploy(env: &MetadataEnv, bundle: &Bundle) -> Result<()> {
     // create client
-    let client = rpc_client::Client::new(
+    let client = moss_rpc_service::Client::new(
         env.api_host.clone(),
         env.api_key.clone(),
         env.api_secret.clone(),
