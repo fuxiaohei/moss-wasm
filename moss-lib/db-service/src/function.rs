@@ -13,7 +13,7 @@ use tracing::debug;
 
 /// upsert_info
 #[tracing::instrument(skip(function_model))]
-pub async fn upsert_info(
+pub async fn save(
     function_model: function_info::Model,
 ) -> Result<function_info::Model, errors::Error> {
     let db = DB.get().unwrap();

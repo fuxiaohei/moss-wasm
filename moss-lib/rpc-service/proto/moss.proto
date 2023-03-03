@@ -16,10 +16,12 @@ message TokenResponse {
 
 // Request message for uploading a bundle
 message BundleUploadRequest {
-  string bundle_name = 1;
-  int64 bundle_size = 2;
-  string bundle_md5 = 3;
-  bytes content = 4;
+  string name = 1;
+  string function_type = 2;
+  string bundle_path = 3;
+  int64 bundle_size = 4;
+  string bundle_md5 = 5;
+  bytes content = 6;
 }
 
 // Response message for uploading a bundle

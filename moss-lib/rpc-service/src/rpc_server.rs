@@ -20,18 +20,18 @@ impl MossRpcService for MossRpcImpl {
         let function_info = FunctionInfoModel {
             id: 0,
             user_id: token_model.user_id,
-            name: req.bundle_name,
+            name: req.name,
             uuid: "uuid".to_string(),
             resource: 1,
             status: "active".to_string(),
-            function_type: "rust".to_string(),
+            function_type: req.function_type,
             storage_path: "/tmp".to_string(),
             storage_size: req.bundle_size as i32,
             storage_md5: req.bundle_md5,
             created_at: now,
             deleted_at: now,
         };
-        let model = moss_db_service::function::upsert_info(function_info)
+        let model = moss_db_service::function::save(function_info)
             .await
             .map_err(|e| Status::internal(e.to_string()))?;
         info!("function info: {:?}", model);

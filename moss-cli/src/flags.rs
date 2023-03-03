@@ -211,7 +211,7 @@ impl Deploy {
             bundle::build(&output, DEFAULT_METADATA_FILE, &meta.get_src_dir()).unwrap();
 
         // upload bundle
-        bundle::deploy(&env, &bundle_object).await.unwrap();
+        bundle::deploy(&env, &meta, &bundle_object).await.unwrap();
     }
 }
 
