@@ -7,11 +7,11 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: u32,
-    pub user_id: i32,
+    pub user_id: u32,
     #[sea_orm(unique)]
     pub uuid: String,
     pub name: String,
-    pub resource: i32,
+    pub resource: u32,
     pub function_type: String,
     pub storage_path: String,
     pub storage_size: i32,
@@ -22,6 +22,43 @@ pub struct Model {
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+pub enum Relation {
+    #[sea_orm(has_many = "super::function_conf::Entity")]
+    FunctionConf,
+    #[sea_orm(
+        belongs_to = "super::function_resource::Entity",
+        from = "Column::Resource",
+        to = "super::function_resource::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    FunctionResource,
+    #[sea_orm(
+        belongs_to = "super::user_info::Entity",
+        from = "Column::UserId",
+        to = "super::user_info::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    UserInfo,
+}
+
+impl Related<super::function_conf::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::FunctionConf.def()
+    }
+}
+
+impl Related<super::function_resource::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::FunctionResource.def()
+    }
+}
+
+impl Related<super::user_info::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserInfo.def()
+    }
+}
 
 impl ActiveModelBehavior for ActiveModel {}

@@ -59,7 +59,7 @@ impl Client {
     ) -> Result<TokenResponse, Box<dyn std::error::Error>> {
         let mut client = self.create_static_client().await?;
         let request = Request::new(TokenRequest { token: user_token });
-        let response = client.verify_token(request).await?;
+        let response = client.create_token(request).await?;
         debug!("[auth_token] response={:?}", response);
         Ok(response.into_inner())
     }

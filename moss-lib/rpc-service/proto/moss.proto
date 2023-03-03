@@ -29,8 +29,8 @@ message BundleUploadResponse {
 }
 
 service MossRpcService {
-  // RPC method for acquiring access and secret tokens
-  rpc VerifyToken(TokenRequest) returns (TokenResponse);
+  // RPC method for create access and secret tokens
+  rpc CreateToken(TokenRequest) returns (TokenResponse);
   // RPC method for uploading a bundle
   rpc UploadBundle(BundleUploadRequest) returns (BundleUploadResponse);
 }

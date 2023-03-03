@@ -1,5 +1,6 @@
 use crate::entity::function_info;
 use crate::entity::prelude::FunctionInfo;
+use crate::errors;
 use crate::DB;
 use sea_orm::ActiveModelTrait;
 use sea_orm::ActiveValue::NotSet;
@@ -14,7 +15,7 @@ use tracing::debug;
 #[tracing::instrument(skip(function_model))]
 pub async fn upsert_info(
     function_model: function_info::Model,
-) -> Result<function_info::Model, crate::Error> {
+) -> Result<function_info::Model, errors::Error> {
     let db = DB.get().unwrap();
 
     // get function info by name and user id
@@ -54,6 +55,6 @@ pub async fn upsert_info(
     let result = active_model
         .save(db)
         .await
-        .map_err(crate::Error::DatabaseError)?;
+        .map_err(errors::Error::DbInternal)?;
     Ok(result.try_into_model().unwrap())
 }

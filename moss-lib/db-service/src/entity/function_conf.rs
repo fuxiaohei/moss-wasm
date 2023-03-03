@@ -7,7 +7,7 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: u32,
-    pub function_id: i32,
+    pub function_id: u32,
     pub name: String,
     pub value: String,
     pub conf_type: String,
@@ -17,6 +17,21 @@ pub struct Model {
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::function_info::Entity",
+        from = "Column::Id",
+        to = "super::function_info::Column::Id",
+        on_update = "NoAction",
+        on_delete = "NoAction"
+    )]
+    FunctionInfo,
+}
+
+impl Related<super::function_info::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::FunctionInfo.def()
+    }
+}
 
 impl ActiveModelBehavior for ActiveModel {}

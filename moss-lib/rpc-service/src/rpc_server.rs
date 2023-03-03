@@ -19,7 +19,7 @@ impl MossRpcService for MossRpcImpl {
         let now = chrono::Utc::now();
         let function_info = FunctionInfoModel {
             id: 0,
-            user_id: token_model.user_id as i32,
+            user_id: token_model.user_id,
             name: req.bundle_name,
             uuid: "uuid".to_string(),
             resource: 1,
@@ -43,14 +43,14 @@ impl MossRpcService for MossRpcImpl {
         Ok(Response::new(resp))
     }
 
-    async fn verify_token(
+    async fn create_token(
         &self,
         request: Request<TokenRequest>,
     ) -> Result<Response<TokenResponse>, Status> {
         crate::auth::verify_auth_token(&request).await?;
 
         let token_str = request.into_inner().token;
-        match moss_db_service::user::find_by_token(token_str).await {
+        match moss_db_service::user_token::get(token_str, "moss-cli").await {
             Ok(token) => {
                 let resp = TokenResponse {
                     access_token: token.access_token,
@@ -69,7 +69,7 @@ pub async fn start(addr: SocketAddr) -> Result<(), Box<dyn std::error::Error>> {
     let rpc_impl = MossRpcImpl::default();
     let svc = MossRpcServiceServer::new(rpc_impl);
     info!("MossRpcServer listening on {addr}");
-    Server::builder().add_service(svc).serve(addr).await?;
 
+    Server::builder().add_service(svc).serve(addr).await?;
     Ok(())
 }
