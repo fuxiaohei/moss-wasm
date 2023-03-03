@@ -28,7 +28,10 @@ async fn main() {
     debug!("read config: {config:?}");
 
     // init database
-    moss_db_service::init_db(&config.db).await.unwrap();
+    moss_core_service::init_db(&config.db).await.unwrap();
+
+    // init function store
+    moss_core_service::init_store(&config.store).unwrap();
 
     // start rpc server
     moss_rpc_service::start(config.http.addr.parse().unwrap())

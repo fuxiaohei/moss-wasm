@@ -19,3 +19,6 @@
 
 # Vscode
 .vscode
+
+# Local data
+data/

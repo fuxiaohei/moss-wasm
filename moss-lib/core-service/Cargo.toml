@@ -1,5 +1,5 @@
 [package]
-name = "moss-db-service"
+name = "moss-core-service"
 version = { workspace = true }
 edition = { workspace = true }
 authors = { workspace = true }
@@ -7,6 +7,7 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 once_cell = { workspace = true }
+opendal = "0.29.0"
 sea-orm = { workspace = true }
 serde = { workspace = true }
 thiserror = "1.0.38"

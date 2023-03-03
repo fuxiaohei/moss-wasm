@@ -1,4 +1,4 @@
-use moss_db_service::entity::user_token::Model as UserTokenModel;
+use moss_core_service::entity::user_token::Model as UserTokenModel;
 use tonic::{metadata::MetadataValue, service::Interceptor, Request, Status};
 
 /// AUTH_STATIC_TOKEN is a static token for authorization
@@ -90,7 +90,7 @@ pub async fn verify_rpc_call_token<T>(req: &Request<T>) -> Result<UserTokenModel
         Some(t) => t.to_str().unwrap().to_string(),
         _ => return Err(Status::unauthenticated("Signature token is required")),
     };
-    let token_data = moss_db_service::user_token::verify(token, secret, "moss-cli")
+    let token_data = moss_core_service::user_token::verify(token, secret, "moss-cli")
         .await
         .map_err(|e| Status::internal(e.to_string()))?;
     Ok(token_data.token)

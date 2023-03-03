@@ -1,5 +1,5 @@
 use anyhow::Result;
-use moss_db_service::Config as DBConfig;
+use moss_core_service::{DbConfig, StoreConfig};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -17,8 +17,9 @@ impl Default for HttpConfig {
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Config {
-    pub db: DBConfig,
+    pub db: DbConfig,
     pub http: HttpConfig,
+    pub store: StoreConfig,
 }
 
 impl Config {

@@ -6,7 +6,7 @@ authors = { workspace = true }
 
 [dependencies]
 chrono = "0.4.23"
-moss-db-service = { path = "../db-service" }
+moss-core-service = { path = "../core-service" }
 prost = "0.11.6"
 tokio = { workspace = true }
 tonic = "0.8.3"

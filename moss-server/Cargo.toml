@@ -7,7 +7,7 @@ authors = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 clap = { version = "4.1.6", features = ["derive"] }
-moss-db-service = { path = "../moss-lib/db-service" }
+moss-core-service = { path = "../moss-lib/core-service" }
 moss-lib = { path = "../moss-lib" }
 moss-rpc-service = { path = "../moss-lib/rpc-service" }
 once_cell = { workspace = true }

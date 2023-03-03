@@ -8,3 +8,9 @@ pool_size = 10
 
 [http]
 addr = "127.0.0.1:8679"
+
+[store]
+driver = "fs"
+
+[store.fs]
+directory = "./data/"

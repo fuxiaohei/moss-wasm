@@ -12,7 +12,7 @@ members = [
     "examples/rust-router",
     "moss-cli",
     "moss-lib",
-    "moss-lib/db-service",
+    "moss-lib/core-service",
     "moss-lib/kv-service",
     "moss-lib/rpc-service",
     "moss-runtime",
@@ -37,7 +37,8 @@ tokio = { workspace = true }
 anyhow = "1.0.69"
 bytes = "1.4.0"
 http = "0.2.9"
-time = "0.3.19"
+# opendal fix time version
+time = { version = ">=0.3.10, <=0.3.17", features = ["serde"] }
 tokio = { version = "1.25.0", features = ["full"] }
 tracing = "0.1.37"
 tracing-subscriber = { version = "0.3.16", features = [
